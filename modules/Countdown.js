@@ -240,15 +240,6 @@ class Countdown {
         }, 10 * 60 * 1000);
     }
 
-    stopTick() {
-        if (this.interval) {
-            clearInterval(this.interval);
-            this.interval = null;
-        }
-    }
-
-    
-
     daysUntil(timestamp) {
         const now = new Date();
         now.setHours(0, 0, 0, 0);

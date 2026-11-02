@@ -2,6 +2,10 @@
 <html lang="ru">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript">
         (function (m, e, t, r, i, k, a) {
@@ -14,12 +18,14 @@
         ym(113937382, 'init', { ssr: true, webvisor: true, clickmap: true, ecommerce: "dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce: true, trackLinks: true });
     </script>
     <noscript>
-        <div><img src="https://mc.yandex.ru/watch/113937382" style="position:absolute; left:-9999px;" alt="" /></div>
+        <div>
+            <img src="https://mc.yandex.ru/watch/113937382" style="position:absolute; left:-9999px;" alt="" />
+        </div>
     </noscript>
     <!-- /Yandex.Metrika counter -->
-    <meta charset="UTF-8">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="preconnect" href="https://code.iconify.design">
+    <link rel="preconnect" href="https://mc.yandex.ru">
 
     <title>main page</title>
 
@@ -27,8 +33,37 @@
     <link rel="shortcut icon" type="image/png" href="icons/icon-192.png">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
 
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+    <!-- Стили подключены отдельными <link>: браузер грузит их параллельно, без waterfall из @import -->
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/glow.css">
+    <link rel="stylesheet" href="styles/background.css">
+    <link rel="stylesheet" href="styles/clock.css">
+    <link rel="stylesheet" href="styles/search.css">
+    <link rel="stylesheet" href="styles/dropdown.css">
+    <link rel="stylesheet" href="styles/volume.css">
+    <link rel="stylesheet" href="styles/hue.css">
+    <link rel="stylesheet" href="styles/weather.css">
+    <link rel="stylesheet" href="styles/groups.css">
+    <link rel="stylesheet" href="styles/particles.css">
+    <link rel="stylesheet" href="styles/aim.css">
+    <link rel="stylesheet" href="styles/typing.css">
+    <link rel="stylesheet" href="styles/achievements.css">
+    <link rel="stylesheet" href="styles/game-icons.css">
+    <link rel="stylesheet" href="styles/time-widget.css">
+    <link rel="stylesheet" href="styles/grain.css">
+    <link rel="stylesheet" href="styles/icons.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+    <link rel="stylesheet" href="styles/notes.css">
+    <link rel="stylesheet" href="styles/mobile-hud.css">
+    <link rel="stylesheet" href="styles/sticky-notes.css">
+    <link rel="stylesheet" href="styles/countdown.css">
+    <link rel="stylesheet" href="styles/calculator.css">
+    <link rel="stylesheet" href="styles/sleep-timeout.css">
+    <link rel="stylesheet" href="styles/dropdown-visibility.css">
+    <link rel="stylesheet" href="styles/sliders.css">
+    <link rel="stylesheet" href="styles/grain-slider-hard-fix.css">
+
+    <script src="https://code.iconify.design/3/3.1.1/iconify.min.js" defer></script>
 </head>
 
 <body class="blur-enabled">
@@ -41,9 +76,9 @@
     <div class="overlay"></div>
 
     <div class="game-icons" id="gameIcons">
-        <button class="game-icon" id="gameIconAim" title="Aim Trainer"><span class="iconify"
+        <button class="game-icon" id="gameIconAim" title="Игра «Убийца осы»"><span class="iconify"
                 data-icon="mdi:target"></span></button>
-        <button class="game-icon" id="gameIconTyping" title="Typing Speed"><span class="iconify"
+        <button class="game-icon" id="gameIconTyping" title="Игра «Нажимать кнопки»"><span class="iconify"
                 data-icon="mdi:keyboard-outline"></span></button>
     </div>
 
@@ -54,7 +89,7 @@
         <div class="notes-header">
             <span class="notes-title">Заметки</span>
             <button class="notes-add-btn" id="notesAddBtn" title="Добавить заметку">+</button>
-            <button class="notes-close" id="notesCloseBtn">✕</button>
+            <button class="notes-close" id="notesCloseBtn" title="Закрыть заметки">✕</button>
         </div>
         <div class="notes-list" id="notesList"></div>
     </div>
@@ -68,9 +103,9 @@
             </div>
             <div class="tw-display" id="swDisplay">00:00.00</div>
             <div class="tw-controls">
-                <button class="tw-btn tw-btn-primary" id="swStartBtn">▶</button>
-                <button class="tw-btn" id="swLapBtn">◉</button>
-                <button class="tw-btn" id="swResetBtn">↺</button>
+                <button class="tw-btn tw-btn-primary" id="swStartBtn" title="Запустить секундомер">▶</button>
+                <button class="tw-btn" id="swLapBtn" title="Засечь круг">◉</button>
+                <button class="tw-btn" id="swResetBtn" title="Сбросить секундомер">↺</button>
             </div>
             <div class="tw-laps" id="swLaps"></div>
         </div>
@@ -84,8 +119,8 @@
             <div class="tw-display" id="cdDisplay">00:00</div>
             <div class="tw-presets" id="cdPresets"></div>
             <div class="tw-controls">
-                <button class="tw-btn tw-btn-primary" id="cdStartBtn">▶</button>
-                <button class="tw-btn" id="cdResetBtn">↺</button>
+                <button class="tw-btn tw-btn-primary" id="cdStartBtn" title="Запустить таймер">▶</button>
+                <button class="tw-btn" id="cdResetBtn" title="Сбросить таймер">↺</button>
             </div>
         </div>
     </div>
@@ -120,7 +155,7 @@
             </div>
 
             <div class="tw-controls">
-                <button class="tw-btn tw-btn-primary" id="weatherRefreshBtn">↻ Обновить</button>
+                <button class="tw-btn tw-btn-primary" id="weatherRefreshBtn" title="Обновить данные о погоде">↻ Обновить</button>
             </div>
         </div>
     </div>
@@ -130,18 +165,19 @@
         <div class="top-time-item hidden" id="topSwDisplay"></div>
         <div class="top-time-item hidden" id="topCdDisplay"></div>
         <div class="search-container">
-            <input id="searchInput" class="search-input" placeholder="Поиск..." autocomplete="off">
+            <input id="searchInput" class="search-input" placeholder="Поиск..." autocomplete="off"
+                title="Строка поиска: введите запрос и нажмите Enter">
             <div id="calcResult" class="calc-result-container"></div>
             <div id="searchHistory" class="search-history"></div>
         </div>
     </div>
 
     <div class="dropdown-container">
-        <button class="dropdown-button" onclick="app.hud.toggleDropdown()">☰</button>
+        <button class="dropdown-button" onclick="app.hud.toggleDropdown()" title="Меню настроек">☰</button>
         <div class="dropdown-menu" id="dropdownMenu">
             <div class="dropdown-header">
                 <span class="dropdown-title">Меню</span>
-                <button class="dropdown-close" onclick="app.hud.hideDropdown()">✕</button>
+                <button class="dropdown-close" onclick="app.hud.hideDropdown()" title="Закрыть меню">✕</button>
             </div>
 
             <div class="dropdown-columns">
@@ -150,24 +186,28 @@
                 <div class="dropdown-column">
                     <div class="dropdown-column-title">Игры</div>
 
-                    <button class="dropdown-item" onclick="app.aim.open(); app.hud.hideDropdown()">
+                    <button class="dropdown-item" onclick="app.aim.open(); app.hud.hideDropdown()"
+                        title="Открыть игру «Убийца осы»">
                         <span>Убийца осу</span>
                         <span id="aimBestIndicator" class="aim-best-indicator">—</span>
                     </button>
 
-                    <button class="dropdown-item" onclick="app.typing.open(); app.hud.hideDropdown()">
+                    <button class="dropdown-item" onclick="app.typing.open(); app.hud.hideDropdown()"
+                        title="Открыть игру «Нажимать кнопки»">
                         <span>Нажимать кнопки</span>
                         <span id="typingBestIndicator" class="aim-best-indicator">—</span>
                     </button>
 
-                    <button class="dropdown-item" onclick="app.achievements.openModal(); app.hud.hideDropdown()">
+                    <button class="dropdown-item" onclick="app.achievements.openModal(); app.hud.hideDropdown()"
+                        title="Открыть список достижений">
                         <span>Достижения</span>
                         <span id="achievementsCounter" class="aim-best-indicator">0 / 21</span>
                     </button>
 
                     <div class="dropdown-divider"></div>
 
-                    <button class="dropdown-item" onclick="app.hud.toggleGameIcons()" id="gameIconsToggleBtn">
+                    <button class="dropdown-item" onclick="app.hud.toggleGameIcons()" id="gameIconsToggleBtn"
+                        title="Показывать иконки игр на странице">
                         <span>Иконки игр</span>
                         <span id="gameIconsIndicator" class="toggle-indicator"></span>
                     </button>
@@ -179,27 +219,31 @@
 
                     <!-- Виджет времени: РОДИТЕЛЬ СНАРУЖИ items -->
                     <div class="dropdown-subgroup" data-subgroup-parent="timeWidgetIndicator">
-                        <button class="dropdown-item" onclick="app.timeWidget.toggle()" id="timeWidgetToggleBtn">
+                        <button class="dropdown-item" onclick="app.timeWidget.toggle()" id="timeWidgetToggleBtn"
+                            title="Показывать виджет с таймером и секундомером">
                             <span>Виджет времени</span>
                             <span id="timeWidgetIndicator" class="toggle-indicator"></span>
                         </button>
 
                         <div class="dropdown-subgroup-items">
                             <button class="dropdown-item dropdown-subitem" onclick="app.hud.toggleAutoSleep()"
-                                id="timeAutoSleepToggleBtn">
-                                <span>Спящий режим при таймере</span>
+                                id="timeAutoSleepToggleBtn"
+                                title="Разрешить уход в режим сна, когда таймер или секундомер запущены">
+                                <span>Сон при активном таймере</span>
                                 <span id="timeAutoSleepIndicator" class="toggle-indicator"></span>
                             </button>
 
                             <button class="dropdown-item dropdown-subitem" onclick="app.timeWidget.toggleSleepDisplay()"
-                                id="timeCenterSleepToggleBtn">
-                                <span>Таймер/секундомер в sleep</span>
+                                id="timeCenterSleepToggleBtn"
+                                title="Показывать часы, таймер и секундомер в режиме сна">
+                                <span>Показывать время в режиме сна</span>
                                 <span id="timeCenterSleepIndicator" class="toggle-indicator"></span>
                             </button>
 
                             <button class="dropdown-item dropdown-subitem" onclick="app.timeWidget.toggleClockDisplay()"
-                                id="timeCenterClockToggleBtn">
-                                <span>Таймер у часов (sleep)</span>
+                                id="timeCenterClockToggleBtn"
+                                title="Показывать время в правом верхнем углу у часов вместо центрального квадрата">
+                                <span>Расположить время у часов</span>
                                 <span id="timeCenterClockIndicator" class="toggle-indicator"></span>
                             </button>
                         </div>
@@ -209,19 +253,22 @@
 
                     <!-- Счётчик дней: РОДИТЕЛЬ СНАРУЖИ items -->
                     <div class="dropdown-subgroup" data-subgroup-parent="countdownIndicator">
-                        <button class="dropdown-item" onclick="app.countdown.toggle()" id="countdownToggleBtn">
+                        <button class="dropdown-item" onclick="app.countdown.toggle()" id="countdownToggleBtn"
+                            title="Показывать счётчик дней до событий">
                             <span>Счётчик дней</span>
                             <span id="countdownIndicator" class="toggle-indicator"></span>
                         </button>
 
                         <div class="dropdown-subgroup-items">
                             <button class="dropdown-item dropdown-subitem"
-                                onclick="app.countdown.addEvent(); app.hud.hideDropdown()">
+                                onclick="app.countdown.addEvent(); app.hud.hideDropdown()"
+                                title="Добавить новое событие">
                                 <span>Добавить событие</span>
                             </button>
 
                             <button class="dropdown-item dropdown-subitem" onclick="app.countdown.togglePin()"
-                                id="countdownPinToggleBtn">
+                                id="countdownPinToggleBtn"
+                                title="Закрепить отсчёты на странице">
                                 <span>Закрепить отсчёты</span>
                                 <span id="countdownPinIndicator" class="toggle-indicator"></span>
                             </button>
@@ -233,13 +280,16 @@
                 <div class="dropdown-column">
                     <div class="dropdown-column-title">Оформление</div>
 
-                    <button class="dropdown-item" onclick="app.background.set(); app.hud.hideDropdown()">
+                    <button class="dropdown-item" onclick="app.background.set(); app.hud.hideDropdown()"
+                        title="Выбрать фон страницы">
                         <span>Установить фон</span>
                     </button>
 
                     <div class="volume-control">
-                        <span class="volume-icon" id="volumeIcon" onclick="app.audio.toggleMute()">🔊</span>
-                        <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="50">
+                        <span class="volume-icon" id="volumeIcon" onclick="app.audio.toggleMute()"
+                            title="Включить или выключить звук">🔊</span>
+                        <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="50"
+                            title="Громкость звука">
                         <span class="volume-value" id="volumeValue">50%</span>
                     </div>
 
@@ -248,23 +298,25 @@
                             <span>Оттенок</span>
                             <span id="hueValue">220°</span>
                         </label>
-                        <input type="range" id="hueSlider" class="hue-slider" min="0" max="360" value="220" step="1">
+                        <input type="range" id="hueSlider" class="hue-slider" min="0" max="360" value="220" step="1"
+                            title="Основной оттенок интерфейса">
 
                         <label for="brightnessSlider">
                             <span>Яркость</span>
                             <span id="brightnessValue">60%</span>
                         </label>
                         <input type="range" id="brightnessSlider" class="hue-slider" min="10" max="100" value="60"
-                            step="1">
+                            step="1" title="Яркость интерфейса">
 
                         <label for="opacitySlider">
                             <span>Прозрачность</span>
                             <span id="opacityValue">100%</span>
                         </label>
                         <input type="range" id="opacitySlider" class="hue-slider" min="20" max="100" value="100"
-                            step="1">
+                            step="1" title="Прозрачность интерфейса">
 
-                        <button id="rgbModeBtn" class="rgb-mode-btn">RGB</button>
+                        <button id="rgbModeBtn" class="rgb-mode-btn"
+                            title="Автоматически менять оттенок интерфейса">RGB</button>
                     </div>
                 </div>
 
@@ -274,7 +326,8 @@
 
                     <!-- Зернистый шум: РОДИТЕЛЬ СНАРУЖИ items -->
                     <div class="dropdown-subgroup" data-subgroup-parent="grainIndicator">
-                        <button class="dropdown-item" onclick="app.hud.toggleGrain()" id="grainToggleBtn">
+                        <button class="dropdown-item" onclick="app.hud.toggleGrain()" id="grainToggleBtn"
+                            title="Показывать зернистый шум поверх страницы">
                             <span>Зернистый шум</span>
                             <span id="grainIndicator" class="toggle-indicator"></span>
                         </button>
@@ -285,30 +338,35 @@
                                     <span>Интенсивность шума</span>
                                     <span id="grainOpacityValue">5.5%</span>
                                 </label>
-                                <input type="range" id="grainOpacity" min="0" max="30" value="5.5" step="1">
+                                <input type="range" id="grainOpacity" min="0" max="30" value="5.5" step="1"
+                                    title="Интенсивность зернистого шума">
                             </div>
                         </div>
                     </div>
 
-                    <button class="dropdown-item" onclick="app.hud.toggleGlow()" id="glowToggleBtn">
+                    <button class="dropdown-item" onclick="app.hud.toggleGlow()" id="glowToggleBtn"
+                        title="Показывать свечение вокруг элементов">
                         <span>Эффект свечения</span>
                         <span id="glowIndicator" class="toggle-indicator"></span>
                     </button>
 
-                    <button class="dropdown-item" onclick="app.hud.toggleBlur()" id="blurToggleBtn">
+                    <button class="dropdown-item" onclick="app.hud.toggleBlur()" id="blurToggleBtn"
+                        title="Размывать фон страницы">
                         <span>Размытие фона</span>
                         <span id="blurIndicator" class="toggle-indicator"></span>
                     </button>
 
                     <!-- Частицы: РОДИТЕЛЬ СНАРУЖИ items -->
                     <div class="dropdown-subgroup" data-subgroup-parent="particlesIndicator">
-                        <button class="dropdown-item" onclick="app.particles.toggle()" id="particlesToggleBtn">
+                        <button class="dropdown-item" onclick="app.particles.toggle()" id="particlesToggleBtn"
+                            title="Показывать анимированные частицы на фоне">
                             <span>Частицы</span>
                             <span id="particlesIndicator" class="toggle-indicator"></span>
                         </button>
 
                         <div class="dropdown-subgroup-items">
-                            <button class="dropdown-item dropdown-subitem" onclick="toggleParticlesSettings()">
+                            <button class="dropdown-item dropdown-subitem" onclick="toggleParticlesSettings()"
+                                title="Открыть настройки частиц">
                                 <span>Настройки частиц</span>
                             </button>
                         </div>
@@ -319,44 +377,53 @@
                         <div class="particles-settings-content">
                             <div class="settings-group">
                                 <label>Количество частиц: <span id="starCountValue">50</span></label>
-                                <input type="range" id="starCount" min="10" max="1000" value="20" step="1">
+                                <input type="range" id="starCount" min="10" max="1000" value="20" step="1"
+                                    title="Количество частиц">
                             </div>
                             <div class="settings-group">
                                 <label>Сила отталкивания от мыши: <span id="repelForceValue">0.3</span></label>
-                                <input type="range" id="repelForce" min="0" max="1" value="0.3" step="0.01">
+                                <input type="range" id="repelForce" min="0" max="1" value="0.3" step="0.01"
+                                    title="Сила отталкивания частиц от мыши">
                             </div>
                             <div class="settings-group">
                                 <label>Радиус отталкивания от мыши: <span id="repelRadiusValue">200</span></label>
-                                <input type="range" id="repelRadius" min="50" max="500" value="200" step="5">
+                                <input type="range" id="repelRadius" min="50" max="500" value="200" step="5"
+                                    title="Радиус отталкивания частиц от мыши">
                             </div>
                             <div class="settings-group">
                                 <label>Базовая скорость: <span id="baseSpeedValue">0.15</span></label>
-                                <input type="range" id="baseSpeed" min="0" max="0.5" value="0.15" step="0.01">
+                                <input type="range" id="baseSpeed" min="0" max="0.5" value="0.15" step="0.01"
+                                    title="Базовая скорость частиц">
                             </div>
                             <div class="settings-group">
                                 <label>Отскок от стен: <span id="bounceValue">0.2</span></label>
-                                <input type="range" id="bounce" min="0" max="1" value="0.2" step="0.01">
+                                <input type="range" id="bounce" min="0" max="1" value="0.2" step="0.01"
+                                    title="Сила отскока частиц от стен">
                             </div>
                             <div class="settings-group">
                                 <label>Расстояние линий: <span id="lineDistanceValue">150</span></label>
-                                <input type="range" id="lineDistance" min="50" max="300" value="150" step="5">
+                                <input type="range" id="lineDistance" min="50" max="300" value="150" step="5"
+                                    title="Расстояние, на котором частицы соединяются линиями">
                             </div>
                             <div class="settings-group">
                                 <label>Мин. расстояние между частицами: <span id="overlapDistanceValue">5</span></label>
-                                <input type="range" id="overlapDistance" min="0" max="50" value="5" step="1">
+                                <input type="range" id="overlapDistance" min="0" max="50" value="5" step="1"
+                                    title="Минимальное расстояние между частицами">
                             </div>
                             <div class="settings-group">
                                 <label>Сила отталкивания частиц: <span id="particleRepelForceValue">0.01</span></label>
-                                <input type="range" id="particleRepelForce" min="0" max="0.1" value="0.01" step="0.001">
+                                <input type="range" id="particleRepelForce" min="0" max="0.1" value="0.01" step="0.001"
+                                    title="Сила отталкивания частиц друг от друга">
                             </div>
                             <div class="settings-group">
                                 <label>Радиус отталкивания частиц: <span id="particleRepelRadiusValue">60</span></label>
-                                <input type="range" id="particleRepelRadius" min="20" max="200" value="60" step="5">
+                                <input type="range" id="particleRepelRadius" min="20" max="200" value="60" step="5"
+                                    title="Радиус отталкивания частиц друг от друга">
                             </div>
                         </div>
                         <div class="particles-settings-footer">
-                            <button onclick="resetParticlesSettings()">Сбросить</button>
-                            <button onclick="saveParticlesSettings()">Сохранить</button>
+                            <button onclick="resetParticlesSettings()" title="Вернуть настройки частиц по умолчанию">Сбросить</button>
+                            <button onclick="saveParticlesSettings()" title="Сохранить настройки частиц">Сохранить</button>
                         </div>
                     </div>
                 </div>
@@ -368,14 +435,16 @@
                     <!-- Блокировка групп: РОДИТЕЛЬ СНАРУЖИ items -->
                     <div class="dropdown-subgroup" data-subgroup-parent="groupsLockIndicator"
                         data-subgroup-invert="true">
-                        <button class="dropdown-item" onclick="app.hud.toggleGroupsLock()" id="groupsLockToggleBtn">
+                        <button class="dropdown-item" onclick="app.hud.toggleGroupsLock()" id="groupsLockToggleBtn"
+                            title="Запретить изменение групп ссылок">
                             <span>Блокировка групп</span>
                             <span id="groupsLockIndicator" class="toggle-indicator"></span>
                         </button>
 
                         <div class="dropdown-subgroup-items">
                             <button class="dropdown-item dropdown-subitem"
-                                onclick="app.groups.add(); app.hud.hideDropdown()">
+                                onclick="app.groups.add(); app.hud.hideDropdown()"
+                                title="Добавить новую группу ссылок">
                                 <span>Добавить группу</span>
                             </button>
                         </div>
@@ -383,26 +452,29 @@
 
                     <div class="dropdown-divider"></div>
 
-                    <button class="dropdown-item" onclick="app.notes.toggleButton()" id="notesToggleBtn">
+                    <button class="dropdown-item" onclick="app.notes.toggleButton()" id="notesToggleBtn"
+                        title="Показывать кнопку заметок на странице">
                         <span>Кнопка заметок</span>
                         <span id="notesIndicator" class="toggle-indicator"></span>
                     </button>
 
                     <div class="dropdown-divider"></div>
 
-                    <button class="dropdown-item" onclick="app.search.toggleOpenMethod()" id="openMethodToggleBtn">
+                    <button class="dropdown-item" onclick="app.search.toggleOpenMethod()" id="openMethodToggleBtn"
+                        title="Открывать поиск в текущей вкладке вместо новой">
                         <span>Заменять вкладку</span>
                         <span id="openMethodIndicator" class="toggle-indicator"></span>
                     </button>
 
                     <button class="dropdown-item" onclick="app.search.setEngine('yandex'); app.hud.hideDropdown()"
-                        id="engineYandex">Яндекс</button>
+                        id="engineYandex" title="Искать в Яндексе">Яндекс</button>
                     <button class="dropdown-item" onclick="app.search.setEngine('google'); app.hud.hideDropdown()"
-                        id="engineGoogle">Google</button>
+                        id="engineGoogle" title="Искать в Google">Google</button>
 
                     <div class="dropdown-divider"></div>
 
-                    <button class="dropdown-item" onclick="app.weather.toggle()" id="weatherToggleBtn">
+                    <button class="dropdown-item" onclick="app.weather.toggle()" id="weatherToggleBtn"
+                        title="Показывать виджет погоды">
                         <span>Показать погоду</span>
                         <span id="weatherIndicator" class="toggle-indicator"></span>
                     </button>
@@ -411,7 +483,8 @@
 
                     <!-- Режим ожидания: РОДИТЕЛЬ СНАРУЖИ items -->
                     <div class="dropdown-subgroup" data-subgroup-parent="sleepModeIndicator">
-                        <button class="dropdown-item" onclick="app.hud.toggleSleepMode()" id="sleepModeToggleBtn">
+                        <button class="dropdown-item" onclick="app.hud.toggleSleepMode()" id="sleepModeToggleBtn"
+                            title="Автоматически скрывать интерфейс при бездействии">
                             <span>Режим ожидания</span>
                             <span id="sleepModeIndicator" class="toggle-indicator"></span>
                         </button>
@@ -424,7 +497,7 @@
                                     <span id="sleepTimeoutValue">15</span>
                                 </label>
                                 <input type="range" id="sleepTimeout" class="hue-slider" min="5" max="120" value="15"
-                                    step="5">
+                                    step="5" title="Время бездействия до перехода в режим сна, в секундах">
                             </div>
                         </div>
                     </div>
@@ -433,14 +506,16 @@
 
                     <!-- История поиска: РОДИТЕЛЬ СНАРУЖИ items -->
                     <div class="dropdown-subgroup" data-subgroup-parent="historyIndicator">
-                        <button class="dropdown-item" onclick="app.history.toggle()" id="toggleHistoryBtn">
+                        <button class="dropdown-item" onclick="app.history.toggle()" id="toggleHistoryBtn"
+                            title="Показывать историю поиска под строкой поиска">
                             <span>История поиска</span>
                             <span id="historyIndicator" class="toggle-indicator"></span>
                         </button>
 
                         <div class="dropdown-subgroup-items">
                             <button class="dropdown-item dropdown-subitem"
-                                onclick="app.history.clear(); app.hud.hideDropdown()">
+                                onclick="app.history.clear(); app.hud.hideDropdown()"
+                                title="Удалить всю историю поиска">
                                 <span>Очистить историю</span>
                             </button>
                         </div>
@@ -453,14 +528,16 @@
 
                     <!-- Стикеры: РОДИТЕЛЬ СНАРУЖИ items -->
                     <div class="dropdown-subgroup" data-subgroup-parent="stickyNotesIndicator">
-                        <button class="dropdown-item" onclick="app.stickyNotes.toggle()" id="stickyNotesToggleBtn">
+                        <button class="dropdown-item" onclick="app.stickyNotes.toggle()" id="stickyNotesToggleBtn"
+                            title="Показывать стикеры на странице">
                             <span>Стикеры на странице</span>
                             <span id="stickyNotesIndicator" class="toggle-indicator"></span>
                         </button>
 
                         <div class="dropdown-subgroup-items">
                             <button class="dropdown-item dropdown-subitem"
-                                onclick="app.stickyNotes.addNote(); app.hud.hideDropdown()">
+                                onclick="app.stickyNotes.addNote(); app.hud.hideDropdown()"
+                                title="Добавить новый стикер">
                                 <span>Добавить стикер</span>
                             </button>
                         </div>
@@ -468,23 +545,27 @@
 
                     <div class="dropdown-divider"></div>
 
-                    <button class="dropdown-item" onclick="app.storage.copyConfig()">
+                    <button class="dropdown-item" onclick="app.storage.copyConfig()"
+                        title="Скопировать настройки в буфер обмена">
                         <span>Копировать конфигурацию</span>
                     </button>
 
-                    <button class="dropdown-item" onclick="app.storage.pasteConfig()">
+                    <button class="dropdown-item" onclick="app.storage.pasteConfig()"
+                        title="Загрузить настройки из буфера обмена">
                         <span>Вставить конфигурацию</span>
                     </button>
 
                     <div class="dropdown-divider"></div>
 
-                    <button class="dropdown-item" onclick="app.storage.resetConfig()" style="color: #ff6b6b;">
+                    <button class="dropdown-item" onclick="app.storage.resetConfig()" style="color: #ff6b6b;"
+                        title="Удалить текущие настройки и вернуть значения по умолчанию">
                         <span>Удалить текущую конфигурацию</span>
                     </button>
 
                     <div class="dropdown-divider"></div>
 
-                    <button class="dropdown-item" onclick="app.hud.forceHide(); app.hud.hideDropdown()">
+                    <button class="dropdown-item" onclick="app.hud.forceHide(); app.hud.hideDropdown()"
+                        title="Скрыть интерфейс до следующего действия мышью или клавиатурой">
                         <span>Скрыть HUD</span>
                     </button>
                 </div>
@@ -537,8 +618,8 @@
             </div>
 
             <div class="aim-result-actions">
-                <button class="aim-btn aim-btn-secondary" id="aimExitBtn">Закрыть</button>
-                <button class="aim-btn aim-btn-primary" id="aimRestartBtn">Ещё раз</button>
+                <button class="aim-btn aim-btn-secondary" id="aimExitBtn" title="Закрыть игру">Закрыть</button>
+                <button class="aim-btn aim-btn-primary" id="aimRestartBtn" title="Начать партию заново">Ещё раз</button>
             </div>
         </div>
     </div>
@@ -568,7 +649,8 @@
         <div class="typing-field">
             <div class="typing-word" id="typingWord"></div>
             <input type="text" id="typingInput" class="typing-input" autocomplete="off" autocorrect="off"
-                autocapitalize="off" spellcheck="false" placeholder="Начни печатать...">
+                autocapitalize="off" spellcheck="false" placeholder="Начни печатать..."
+                title="Введите слово и нажмите Enter">
         </div>
 
         <div class="aim-result" id="typingResult">
@@ -599,8 +681,8 @@
             </div>
 
             <div class="aim-result-actions">
-                <button class="aim-btn aim-btn-secondary" id="typingExitBtn">Закрыть</button>
-                <button class="aim-btn aim-btn-primary" id="typingRestartBtn">Ещё раз</button>
+                <button class="aim-btn aim-btn-secondary" id="typingExitBtn" title="Закрыть игру">Закрыть</button>
+                <button class="aim-btn aim-btn-primary" id="typingRestartBtn" title="Начать заново">Ещё раз</button>
             </div>
         </div>
     </div>
@@ -628,8 +710,9 @@
     <div id="stickyNotesContainer" class="sticky-notes-container"></div>
 
     <div class="time-center" id="timeCenter">
-        <div class="time-center-item hidden-item" id="timeCenterSw"></div>
-        <div class="time-center-item hidden-item" id="timeCenterCd"></div>
+        <div class="time-center-item time-center-clock" id="timeCenterClock"></div>
+        <div class="time-center-item hidden" id="timeCenterSw"></div>
+        <div class="time-center-item hidden" id="timeCenterCd"></div>
     </div>
 
     <script type="module" src="app.js"></script>

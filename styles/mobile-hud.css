@@ -24,16 +24,6 @@
     }
 }
 
-body.hud-hidden.sleep-no-grain .grain-overlay {
-    opacity: 0 !important;
-    animation: none !important;
-}
-
-body.hud-hidden.sleep-no-blur #bgVideo,
-body.hud-hidden.sleep-no-blur .youtube-wrapper iframe {
-    filter: blur(0) !important;
-}
-
 @media (max-width: 768px) {
 
     

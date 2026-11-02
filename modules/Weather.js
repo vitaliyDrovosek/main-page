@@ -16,7 +16,6 @@ class Weather {
         this._dragging = false;
         this.dragOffsetX = 0;
         this.dragOffsetY = 0;
-        this.dragRect = null;
         this.pos = { x: null, y: null };
 
         this._els = {};
@@ -50,8 +49,12 @@ class Weather {
         this.restorePosition();
         this.updateIndicator();
 
+        window.addEventListener('resize', () => this.reclampPosition());
+        window.addEventListener('orientationchange', () => setTimeout(() => this.reclampPosition(), 150));
+
         if (this.app.data.weatherEnabled) {
             this.widget?.classList.add('visible');
+            this.reclampPosition();
             this.fetch();
             this._startAutoRefresh();
         }
@@ -114,6 +117,7 @@ class Weather {
         this.widget?.classList.toggle('visible', this.app.data.weatherEnabled);
 
         if (this.app.data.weatherEnabled) {
+            this.reclampPosition();
             this.fetch();
             this._startAutoRefresh();
         } else {
@@ -129,7 +133,6 @@ class Weather {
         this._dragging = true;
         this.dragOffsetX = e.clientX - rect.left;
         this.dragOffsetY = e.clientY - rect.top;
-        this.dragRect = { width: rect.width, height: rect.height };
         this.widget.classList.add('dragging');
 
         document.addEventListener('mousemove', this.boundMouseMove);
@@ -144,23 +147,20 @@ class Weather {
         const cx = e.touches ? e.touches[0].clientX : e.clientX;
         const cy = e.touches ? e.touches[0].clientY : e.clientY;
 
-        const r = this.dragRect || { width: 240, height: 200 };
-        const x = Math.max(0, Math.min(window.innerWidth - r.width, cx - this.dragOffsetX));
-        const y = Math.max(0, Math.min(window.innerHeight - r.height, cy - this.dragOffsetY));
+        const p = this._clampPosition(cx - this.dragOffsetX, cy - this.dragOffsetY);
 
-        this.widget.style.left = x + 'px';
-        this.widget.style.top = y + 'px';
+        this.widget.style.left = p.x + 'px';
+        this.widget.style.top = p.y + 'px';
         this.widget.style.right = 'auto';
         this.widget.style.bottom = 'auto';
 
-        this.pos.x = x;
-        this.pos.y = y;
+        this.pos.x = p.x;
+        this.pos.y = p.y;
     }
 
     onDragEnd() {
         if (!this._dragging || !this.widget) return;
         this._dragging = false;
-        this.dragRect = null;
         this.widget.classList.remove('dragging');
 
         document.removeEventListener('mousemove', this.boundMouseMove);
@@ -176,17 +176,52 @@ class Weather {
         if (!this.widget) return;
         const saved = this.app.data.weatherPos;
         if (saved && typeof saved.x === 'number' && typeof saved.y === 'number') {
-            this.pos = { x: saved.x, y: saved.y };
-            this.widget.style.left = saved.x + 'px';
-            this.widget.style.top = saved.y + 'px';
-            this.widget.style.right = 'auto';
-            this.widget.style.bottom = 'auto';
+            this._applyPosition(saved.x, saved.y);
         } else {
+            this.pos = { x: null, y: null };
             this.widget.style.left = 'auto';
             this.widget.style.right = '20px';
             this.widget.style.top = '20px';
             this.widget.style.bottom = 'auto';
         }
+    }
+
+    // ---------- Положение и адаптивность ----------
+
+    _measureSize() {
+        if (!this.widget) return { width: 220, height: 240 };
+        const rect = this.widget.getBoundingClientRect();
+        return {
+            width: rect.width || this.widget.offsetWidth || 240,
+            height: rect.height || this.widget.offsetHeight || 240
+        };
+    }
+
+    _clampPosition(x, y) {
+        const margin = 10;
+        const { width, height } = this._measureSize();
+        const maxX = Math.max(margin, window.innerWidth - width - margin);
+        const maxY = Math.max(margin, window.innerHeight - height - margin);
+        return {
+            x: Math.min(Math.max(margin, x), maxX),
+            y: Math.min(Math.max(margin, y), maxY)
+        };
+    }
+
+    _applyPosition(x, y) {
+        if (!this.widget) return;
+        const p = this._clampPosition(x, y);
+        this.pos = p;
+        this.widget.style.left = p.x + 'px';
+        this.widget.style.top = p.y + 'px';
+        this.widget.style.right = 'auto';
+        this.widget.style.bottom = 'auto';
+    }
+
+    // Возвращает виджет в пределы экрана после поворота/изменения размера окна.
+    reclampPosition() {
+        if (!this.widget || this.pos.x === null || this.pos.y === null) return;
+        this._applyPosition(this.pos.x, this.pos.y);
     }
 }
 

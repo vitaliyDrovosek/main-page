@@ -37,7 +37,7 @@ class Storage {
             background: savedData.background || null,
             youtubeId: savedData.youtubeId || null,
             youtubePlaylistId: savedData.youtubePlaylistId || null,
-            isMuted: true, // при каждой загрузке звук выключен (не читаем из localStorage)
+            isMuted: true, // РїСЂРё РєР°Р¶РґРѕР№ Р·Р°РіСЂСѓР·РєРµ Р·РІСѓРє РІС‹РєР»СЋС‡РµРЅ (РЅРµ С‡РёС‚Р°РµРј РёР· localStorage)
             volume: savedData.volume ?? 50,
             searchEngine: savedData.searchEngine || 'yandex',
             searchHistory: arr(savedData.searchHistory),
@@ -52,8 +52,6 @@ class Storage {
             replaceTab: savedData.replaceTab ?? true,
             glowEnabled: savedData.glowEnabled ?? true,
             grainEnabled: savedData.grainEnabled ?? false,
-            sleepGrainEnabled: savedData.sleepGrainEnabled ?? true,
-            sleepBlurEnabled: savedData.sleepBlurEnabled ?? true,
             stickyNotesEnabled: savedData.stickyNotesEnabled ?? false,
             stickyNotes: arr(savedData.stickyNotes),
             stickyNotesDefaultColor: savedData.stickyNotesDefaultColor || 'yellow',
@@ -124,7 +122,7 @@ class Storage {
         try {
             this.syncParticlesFromState();
             this.app.data.glowEnabled = this.app.glowEnabled;
-            // isMuted не пишем в localStorage — при новой загрузке всегда true
+            // isMuted РЅРµ РїРёС€РµРј РІ localStorage вЂ” РїСЂРё РЅРѕРІРѕР№ Р·Р°РіСЂСѓР·РєРµ РІСЃРµРіРґР° true
             const { isMuted, ...toSave } = this.app.data;
             localStorage.setItem(this.STORAGE_KEY, JSON.stringify(toSave));
         } catch (err) {

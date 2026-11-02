@@ -21,7 +21,6 @@ class Hue {
 
         
         this._applyRafId = null;
-        this._applyPending = false;
 
         
         this._lastBrightness = null;
@@ -161,10 +160,8 @@ class Hue {
         const accentBright    = this.hsl(hue, 90, 70 * bFactor);
         const accentBrightRgb = this.hslToRgbStr(hue, 90, 70 * bFactor);
 
-        const accentDark      = this.hsl(hue, 50, 25 * bFactor);
         const accentDarkRgb   = this.hslToRgbStr(hue, 50, 25 * bFactor);
 
-        const accentMuted     = this.hsl(hue, 35, 50 * bFactor);
         const accentMutedRgb  = this.hslToRgbStr(hue, 35, 50 * bFactor);
 
         const invertHue       = (hue + 180) % 360;
@@ -181,14 +178,10 @@ class Hue {
         root.style.setProperty('--accent-deep-rgb', accentDeepRgb);
         root.style.setProperty('--accent-bright', accentBright);
         root.style.setProperty('--accent-bright-rgb', accentBrightRgb);
-        root.style.setProperty('--accent-dark', accentDark);
         root.style.setProperty('--accent-dark-rgb', accentDarkRgb);
-        root.style.setProperty('--accent-muted', accentMuted);
         root.style.setProperty('--accent-muted-rgb', accentMutedRgb);
         root.style.setProperty('--accent-invert', accentInvert);
         root.style.setProperty('--accent-invert-rgb', accentInvertRgb);
-        root.style.setProperty('--ui-brightness', brightness / 100);
-        root.style.setProperty('--ui-opacity', opacity / 100);
 
         if (this.valueLabel)      this.valueLabel.textContent = hue + '°';
         if (this.brightnessLabel) this.brightnessLabel.textContent = brightness + '%';

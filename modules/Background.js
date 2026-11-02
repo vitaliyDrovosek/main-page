@@ -197,28 +197,6 @@ class Background {
         this.app.storage.save();
         this.apply();
     }
-
-    unmuteIfNeeded() {
-        if (this._isMuted()) return;
-
-        const { wrapper } = this._getEls();
-        if (!wrapper || wrapper.style.display === 'none') return;
-
-        const iframe = wrapper.querySelector('iframe');
-        if (!iframe?.contentWindow) return;
-
-        const send = (func, args) => {
-            try {
-                iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func, args }), '*');
-            } catch (err) {
-                console.debug('[Background] YT postMessage failed:', err?.message);
-            }
-        };
-
-        send('playVideo', []);
-        send('unMute', []);
-        send('setVolume', [this._getVolume()]);
-    }
 }
 
 export default Background;
