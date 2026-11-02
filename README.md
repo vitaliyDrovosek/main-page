@@ -84,7 +84,7 @@
 ### 5. Таймер: уход в минус + красный цвет
 
 - **`modules/TimeWidget.js`** — таймер **не останавливается** на 0: `cdRemaining` уходит в минус, `cdRunning` остаётся `true`, `cdTick` продолжает `requestAnimationFrame`. Флаг `cdOvertime` ставится **один раз** при переходе `+` → `−` (ловится по `prev > 0 && overtime && !cdOvertime`). `cdFormat` поддерживает отрицательные (`-MM:SS`). Звук `cdPlaySound()` вызывается **один раз** при переходе, флаг `_cdSoundPlayed` сбрасывается в `cdSetTime`, `cdReset`, `cdStart` (если старт не из минуса), `restoreState`. Кнопка при overtime — `↺` (сброс + старт). `isActive()` возвращает `true`, пока идёт секундомер или таймер; для показа в режиме сна используются `isSwStarted()` / `isCdStarted()`.
-- **`styles/time-widget.css`** — добавлены `.overtime` для `.tw-display`, `.time-center-item`, `.top-time-item`: красный цвет + пульсация (`cdFlash`), как у `.finished`.
+- **`styles/time-widget.cs  ёs`** — добавлены `.overtime` для `.tw-display`, `.time-center-item`, `.top-time-item`: красный цвет + пульсация (`cdFlash`), как у `.finished`.
 
 ### 6. Низкая высота вьюпорта (1526×730)
 
