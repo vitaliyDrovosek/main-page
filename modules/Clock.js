@@ -2,11 +2,13 @@ class Clock {
     constructor(app) {
         this.app = app;
         this.el = null;
+        this.centerEl = null;
         this.interval = null;
     }
 
     init() {
         this.el = document.getElementById('clock');
+        this.centerEl = document.getElementById('timeCenterClock');
         this.startClock();
     }
 
@@ -15,20 +17,14 @@ class Clock {
         this.interval = setInterval(() => this.updateClock(), 1000);
     }
 
-    stopClock() {
-        if (this.interval) {
-            clearInterval(this.interval);
-            this.interval = null;
-        }
-    }
-
     updateClock() {
-        if (!this.el) return;
-        this.el.textContent = new Date().toLocaleTimeString('ru-RU', {
+        const text = new Date().toLocaleTimeString('ru-RU', {
             hour: '2-digit',
             minute: '2-digit',
             second: '2-digit'
         });
+        if (this.el) this.el.textContent = text;
+        if (this.centerEl) this.centerEl.textContent = text;
     }
 }
 

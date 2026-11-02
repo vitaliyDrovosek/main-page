@@ -12,23 +12,16 @@
     --accent-bright: #80aaff;
     --accent-bright-rgb: 128, 170, 255;
 
-    --accent-dark: #1f3a66;
     --accent-dark-rgb: 31, 58, 102;
 
-    --accent-muted: #6e88a8;
     --accent-muted-rgb: 110, 136, 168;
 
     --accent-invert: #ff8a3d;
     --accent-invert-rgb: 255, 138, 61;
 
-    --ui-brightness: 0.6;
-    --ui-opacity: 1;
-
     --glass: rgba(255, 255, 255, 0.12);
-    --glass-hover: rgba(255, 255, 255, 0.2);
     --text-primary: #ffffff;
     --text-secondary: #e2e8f0;
-    --history-bg: rgba(20, 20, 30, 0.85);
 
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);

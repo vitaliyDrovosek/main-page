@@ -67,12 +67,6 @@ class Grain {
         this.app.storage.save();
     }
 
-    setOpacity(value) {
-        this.app.data.grainOpacity = this.clampOpacity(value);
-        this.apply();
-        this.app.storage.save();
-    }
-
     updateIndicator() {
         if (this._indicator) {
             this._indicator.classList.toggle('off', !this._isEnabled());
@@ -89,8 +83,6 @@ class Grain {
             this._valEl.textContent = opacity + '%';
         }
     }
-
-    refresh() { this.apply(); }
 }
 
 export default Grain;

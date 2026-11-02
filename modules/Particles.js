@@ -453,13 +453,6 @@ window.toggleParticlesSettings = () => this.toggleSettings();
 
     }
 
-    _positionPanel(panel, menu) {
-        
-        
-        return;
-
-    }
-
     setupSettingsListeners() {
         const settings = [
             { id: 'starCount', setting: 'STAR_COUNT', type: 'int' },

@@ -176,31 +176,15 @@ class HUD {
     handleWindowBlur() { this.tabVisible = false; }
     handleWindowFocus() { this.tabVisible = true; this.resetTimer(); }
 
-    removeActivityListeners() {
-        const h = this.boundHandlers;
-        document.removeEventListener('mousemove', h.handleMouseMove);
-        document.removeEventListener('mousedown', h.handleMouseDown);
-        document.removeEventListener('keydown', h.handleKeyDown);
-        document.removeEventListener('touchmove', h.handleTouchMove);
-        document.removeEventListener('touchstart', h.handleMouseDown);
-        document.removeEventListener('wheel', h.handleWheel);
-        document.removeEventListener('visibilitychange', h.handleVisibilityChange);
-        window.removeEventListener('blur', h.handleWindowBlur);
-        window.removeEventListener('focus', h.handleWindowFocus);
-        if (this._moveRafId) {
-            cancelAnimationFrame(this._moveRafId);
-            this._moveRafId = null;
-        }
-        this.clearSleepTimer();
-    }
-
     
 
     
 
     show() {
+        if (!document.body.classList.contains('hud-hidden')) return;
         document.body.classList.remove('hud-hidden');
         this.app.timeWidget?.hideCenter();
+        this.app.timeWidget?.renderSleepTime?.();
     }
 
     hide() {
@@ -208,14 +192,13 @@ class HUD {
         if (!this.app.data.sleepModeEnabled) return;
         if (!this.app.data.timeAutoSleepEnabled && this.app.timeWidget?.isActive()) return;
         document.body.classList.add('hud-hidden');
-        this.app.timeWidget?.hideCenter?.();
-        this.app.timeWidget?._positionCenterNearClock?.();
+        this.app.timeWidget?.renderSleepTime?.();
     }
 
     forceHide() {
         if (!this.tabVisible) return;
         document.body.classList.add('hud-hidden');
-        this.app.timeWidget?.hideCenter?.();
+        this.app.timeWidget?.renderSleepTime?.();
         this.clearSleepTimer();
     }
 
@@ -304,37 +287,6 @@ class HUD {
         if (indicator) indicator.classList.toggle('off', !this.app.data.blurEnabled);
     }
 
-    toggleSleepGrain() {
-        this.app.data.sleepGrainEnabled = !(this.app.data.sleepGrainEnabled !== false);
-        this.updateSleepGrainIndicator();
-        this.applySleepStyles();
-        this.app.storage.save();
-    }
-
-    updateSleepGrainIndicator() {
-        const indicator = document.getElementById('sleepGrainIndicator');
-        if (indicator) indicator.classList.toggle('off', this.app.data.sleepGrainEnabled === false);
-    }
-
-    toggleSleepBlur() {
-        this.app.data.sleepBlurEnabled = !(this.app.data.sleepBlurEnabled !== false);
-        this.updateSleepBlurIndicator();
-        this.applySleepStyles();
-        this.app.storage.save();
-    }
-
-    updateSleepBlurIndicator() {
-        const indicator = document.getElementById('sleepBlurIndicator');
-        if (indicator) indicator.classList.toggle('off', this.app.data.sleepBlurEnabled === false);
-    }
-
-    applySleepStyles() {
-        const hideGrain = this.app.data.sleepGrainEnabled === false;
-        const hideBlur = this.app.data.sleepBlurEnabled === false;
-        document.body.classList.toggle('sleep-no-grain', hideGrain);
-        document.body.classList.toggle('sleep-no-blur', hideBlur);
-    }
-
     toggleGameIcons() { this.app.gameIcons?.toggle(); }
 
     
@@ -373,7 +325,6 @@ class HUD {
     }
 
     toggleGrain() { this.app.grain?.toggle(); }
-    setGrainOpacity(v) { this.app.grain?.setOpacity(v); }
 }
 
 export default HUD;

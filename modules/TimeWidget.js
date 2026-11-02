@@ -20,10 +20,11 @@ class TimeWidget {
         this.PRESETS = [1, 5, 10, 15, 25, 60];
 
         this.dragging = false; this.dragOffsetX = 0; this.dragOffsetY = 0;
-        this.dragRect = null;
         this.pos = { x: 20, y: 0 };
 
         this.centerEl = null; this.centerSwEl = null; this.centerCdEl = null;
+        this.centerClockEl = null;
+        this.clockEl = null;
         this._centerVisible = false;
 
         this.topSwEl = null; this.topCdEl = null;
@@ -59,6 +60,8 @@ class TimeWidget {
         this.centerEl = document.getElementById('timeCenter');
         this.centerSwEl = document.getElementById('timeCenterSw');
         this.centerCdEl = document.getElementById('timeCenterCd');
+        this.centerClockEl = document.getElementById('timeCenterClock');
+        this.clockEl = document.getElementById('clock');
         this.topSwEl = document.getElementById('topSwDisplay');
         this.topCdEl = document.getElementById('topCdDisplay');
         this._fixTopWidths();
@@ -75,11 +78,18 @@ class TimeWidget {
         this.dragHandle?.addEventListener('mousedown', (e) => this.onDragStart(e));
         this.dragHandle?.addEventListener('touchstart', (e) => this.onDragStart(e.touches[0]), { passive: false });
         window.addEventListener('resize', () => {
-            this._positionCenterNearClock();
+            this.reclampPosition();
             this._positionTopDisplay();
+            this.updateCenter();
+        });
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => this.reclampPosition(), 150);
         });
         this.updateVisibility();
         this.updateIndicator();
+        this.updateSleepDisplayIndicator();
+        this.updateClockDisplayIndicator();
+        this.renderSleepTime();
 
         this._refreshAutoSave();
     }
@@ -170,34 +180,25 @@ class TimeWidget {
     // ---------- Спящий режим ----------
 
     toggleSleepDisplay() {
-        this.app.data.timeCenterInSleepEnabled = !(this.app.data.timeCenterInSleepEnabled !== false);
+        this.app.data.timeCenterInSleepEnabled = this.app.data.timeCenterInSleepEnabled === false;
         this.updateSleepDisplayIndicator();
         this.app.storage.save();
-        if (this.app.data.timeCenterInSleepEnabled === false) {
-            this.hideCenter();
-        } else if (this.isActive() && document.body.classList.contains('hud-hidden')) {
-            this.renderCenter();
-        }
+        this.renderSleepTime();
     }
 
     toggleClockDisplay() {
-        this.app.data.timeCenterInClockEnabled = !(this.app.data.timeCenterInClockEnabled === true);
+        this.app.data.timeCenterInClockEnabled = this.app.data.timeCenterInClockEnabled !== true;
+        // Выбор положения подразумевает, что показ времени в режиме сна включён.
+        this.app.data.timeCenterInSleepEnabled = true;
+        this.updateSleepDisplayIndicator();
         this.updateClockDisplayIndicator();
         this.app.storage.save();
-        this._applyNearClockClass();
-        if (document.body.classList.contains('hud-hidden')) {
-            if (this.isActive()) this.renderCenter();
-        }
+        this.renderSleepTime();
     }
 
     updateClockDisplayIndicator() {
         const el = document.getElementById('timeCenterClockIndicator');
         if (el) el.classList.toggle('off', this.app.data.timeCenterInClockEnabled !== true);
-    }
-
-    _applyNearClockClass() {
-        if (!this.centerEl) return;
-        this.centerEl.classList.toggle('near-clock', this.app.data.timeCenterInClockEnabled === true);
     }
 
     updateSleepDisplayIndicator() {
@@ -208,10 +209,20 @@ class TimeWidget {
     }
 
     isSwActive() { return this.swRunning || this.swElapsed > 0; }
-    isCdActive() { return this.cdRunning || this.cdRemaining > 0 || this.cdOvertime || this.cdFinished; }
     isActive() { return this.swRunning || this.cdRunning; }
-    isSwRunning() { return this.swRunning; }
-    isCdRunning() { return this.cdRunning; }
+
+    /**
+     * Для режима сна показываем только то, что реально было запущено:
+     * сброшенный таймер (cdRemaining === cdTotal) считается выключенным.
+     */
+    isSwStarted() {
+        return this.isSwActive();
+    }
+
+    isCdStarted() {
+        return this.cdRunning || this.cdFinished || this.cdOvertime ||
+            (this.cdTotal > 0 && this.cdRemaining > 0 && this.cdRemaining < this.cdTotal);
+    }
 
     updateVisibility() {
         if (!this.widget) return;
@@ -222,6 +233,7 @@ class TimeWidget {
         this.app.data.timeWidgetEnabled = !this.app.data.timeWidgetEnabled;
         this.updateVisibility();
         this.updateIndicator();
+        this.reclampPosition();
         this._refreshAutoSave();
         this._syncTopDisplay();
         this.app.storage.save();
@@ -273,8 +285,13 @@ class TimeWidget {
     _syncTopDisplay() {
         if (!this.topSwEl && !this.topCdEl) return;
 
-        const showSw = this.swRunning || this.swElapsed > 0;
-        const showCd = this.cdRunning || this.cdRemaining !== 0 || this.cdOvertime || this.cdFinished;
+        const sleeping = document.body.classList.contains('hud-hidden');
+        const showSw = sleeping
+            ? this.isSwStarted()
+            : (this.swRunning || this.swElapsed > 0);
+        const showCd = sleeping
+            ? this.isCdStarted()
+            : (this.cdRunning || this.cdRemaining !== 0 || this.cdOvertime || this.cdFinished);
 
         if (this.topSwEl) {
             this.topSwEl.classList.toggle('hidden', !showSw);
@@ -314,87 +331,72 @@ class TimeWidget {
         }
     }
 
-    // ---------- Центр (sleep) ----------
+    // ---------- Время в режиме сна ----------
 
-    _positionCenterNearClock() {
-        if (!this.centerEl) return;
-        const clock = document.getElementById('clock');
-        if (!clock) return;
-
-        if (!document.body.classList.contains('hud-hidden')) {
-            this.centerEl.style.right = '';
-            this.centerEl.style.left = '';
-            return;
-        }
-
-        const clockRect = clock.getBoundingClientRect();
-        const gap = 12;
-        const rightPx = window.innerWidth - clockRect.left + gap;
-        this.centerEl.style.right = rightPx + 'px';
-        this.centerEl.style.left = 'auto';
+    isSleepTimeEnabled() {
+        return this.app.data.timeCenterInSleepEnabled !== false;
     }
 
-    renderCenter() {
+    isSleepTimeNearClock() {
+        return this.app.data.timeCenterInClockEnabled === true;
+    }
+
+    /**
+     * Синхронизирует режим отображения времени во сне.
+     * - настройка выключена: таймер/секундомер в режиме сна не показываются;
+     * - включена + «у часов» выключено: центральный квадрат с часами, таймером и секундомером;
+     * - включена + «у часов» включено: время рядом с часами в правом верхнем углу.
+     */
+    renderSleepTime() {
         if (!this.centerEl) return;
-        if (document.body.classList.contains('hud-hidden')) {
-            this.centerEl.classList.remove('visible');
-            this._centerVisible = false;
-            return;
-        }
-        this._applyNearClockClass();
-        if (this.app.data.timeCenterInSleepEnabled === false) {
-            this.centerEl.classList.remove('visible');
-            this._centerVisible = false;
-            return;
-        }
-        const showSw = this.swRunning;
-        const showCd = this.cdRunning;
-        if (!showSw && !showCd) {
-            this.centerEl.classList.remove('visible');
-            this._centerVisible = false;
-            return;
-        }
-        if (this.centerSwEl) {
-            this.centerSwEl.classList.toggle('hidden', !showSw);
-            this.centerSwEl.textContent = this.swFormat(this.swElapsed);
-        }
-        if (this.centerCdEl) {
-            this.centerCdEl.classList.toggle('hidden', !showCd);
-            this.centerCdEl.textContent = this.cdFormat(this.cdRemaining);
-            this.centerCdEl.classList.toggle('finished', this.cdFinished);
-            this.centerCdEl.classList.toggle('overtime', this.cdOvertime);
-        }
-        this.centerEl.classList.add('visible');
-        this._centerVisible = true;
-        this._positionCenterNearClock();
+
+        const sleeping = document.body.classList.contains('hud-hidden');
+        const enabled = this.isSleepTimeEnabled();
+        const nearClock = this.isSleepTimeNearClock();
+        const centerMode = sleeping && enabled && !nearClock;
+
+        document.body.classList.toggle('sleep-time-center', centerMode);
+        document.body.classList.toggle('sleep-time-off', sleeping && !enabled);
+
+        this.centerEl.classList.toggle('visible', centerMode);
+        this._centerVisible = centerMode;
+
+        if (centerMode) this.updateCenter();
+
+        this._syncTopDisplay();
     }
 
     updateCenter() {
-        if (!this._centerVisible) return;
-        if (document.body.classList.contains('hud-hidden')) {
-            this.centerEl?.classList.remove('visible');
-            this._centerVisible = false;
-            return;
+        if (!this.centerEl || !this._centerVisible) return;
+
+        if (this.centerClockEl) {
+            const clockText = this.clockEl?.textContent;
+            if (clockText && this.centerClockEl.textContent !== clockText) {
+                this.centerClockEl.textContent = clockText;
+            }
         }
-        if (this.app.data.timeCenterInSleepEnabled === false) {
-            this.centerEl.classList.remove('visible');
-            this._centerVisible = false;
-            return;
+
+        const showSw = this.isSwStarted();
+        const showCd = this.isCdStarted();
+
+        if (this.centerSwEl) {
+            this.centerSwEl.classList.toggle('hidden', !showSw);
+            if (showSw) this.centerSwEl.textContent = this.swFormat(this.swElapsed);
         }
-        if (this.centerSwEl && !this.centerSwEl.classList.contains('hidden'))
-            this.centerSwEl.textContent = this.swFormat(this.swElapsed);
-        if (this.centerCdEl && !this.centerCdEl.classList.contains('hidden')) {
-            this.centerCdEl.textContent = this.cdFormat(this.cdRemaining);
-            this.centerCdEl.classList.toggle('finished', this.cdFinished);
-            this.centerCdEl.classList.toggle('overtime', this.cdOvertime);
+        if (this.centerCdEl) {
+            this.centerCdEl.classList.toggle('hidden', !showCd);
+            if (showCd) {
+                this.centerCdEl.textContent = this.cdFormat(this.cdRemaining);
+                this.centerCdEl.classList.toggle('finished', this.cdFinished);
+                this.centerCdEl.classList.toggle('overtime', this.cdOvertime);
+            }
         }
-        this._positionCenterNearClock();
     }
 
     hideCenter() {
         this.centerEl?.classList.remove('visible');
         this._centerVisible = false;
-        this._applyNearClockClass();
+        document.body.classList.remove('sleep-time-center', 'sleep-time-off');
     }
 
     // ---------- Drag ----------
@@ -406,7 +408,6 @@ class TimeWidget {
         this.dragging = true;
         this.dragOffsetX = e.clientX - rect.left;
         this.dragOffsetY = e.clientY - rect.top;
-        this.dragRect = { width: rect.width, height: rect.height };
         this.widget.classList.add('dragging');
         document.addEventListener('mousemove', this.boundMouseMove);
         document.addEventListener('mouseup', this.boundMouseUp);
@@ -419,14 +420,13 @@ class TimeWidget {
         if (e.touches) e.preventDefault();
         const cx = e.touches ? e.touches[0].clientX : e.clientX;
         const cy = e.touches ? e.touches[0].clientY : e.clientY;
-        const r = this.dragRect || { width: 240, height: 200 };
-        const x = Math.max(0, Math.min(window.innerWidth - r.width, cx - this.dragOffsetX));
-        const y = Math.max(0, Math.min(window.innerHeight - r.height, cy - this.dragOffsetY));
-        this.widget.style.left = x + 'px';
-        this.widget.style.top = y + 'px';
+        const p = this._clampPosition(cx - this.dragOffsetX, cy - this.dragOffsetY);
+        this.widget.style.left = p.x + 'px';
+        this.widget.style.top = p.y + 'px';
+        this.widget.style.right = 'auto';
         this.widget.style.bottom = 'auto';
-        this.pos.x = x;
-        this.pos.y = y;
+        this.pos.x = p.x;
+        this.pos.y = p.y;
     }
 
     onDragEnd() {
@@ -437,7 +437,6 @@ class TimeWidget {
         document.removeEventListener('mouseup', this.boundMouseUp);
         document.removeEventListener('touchmove', this.boundTouchMove);
         document.removeEventListener('touchend', this.boundTouchEnd);
-        this.dragRect = null;
         this.app.data.timeWidgetPos = { x: this.pos.x, y: this.pos.y };
         this.app.storage.save();
     }
@@ -446,15 +445,52 @@ class TimeWidget {
         if (!this.widget) return;
         const saved = this.app.data.timeWidgetPos;
         if (saved && typeof saved.x === 'number' && typeof saved.y === 'number') {
-            this.pos = { x: saved.x, y: saved.y };
-            this.widget.style.left = saved.x + 'px';
-            this.widget.style.top = saved.y + 'px';
-            this.widget.style.bottom = 'auto';
+            this._applyPosition(saved.x, saved.y);
         } else {
+            this.pos = { x: null, y: null };
             this.widget.style.left = '20px';
+            this.widget.style.right = 'auto';
             this.widget.style.bottom = '20px';
             this.widget.style.top = 'auto';
         }
+    }
+
+    // ---------- Положение и адаптивность ----------
+
+    _measureSize() {
+        if (!this.widget) return { width: 240, height: 320 };
+        const rect = this.widget.getBoundingClientRect();
+        return {
+            width: rect.width || this.widget.offsetWidth || 240,
+            height: rect.height || this.widget.offsetHeight || 320
+        };
+    }
+
+    _clampPosition(x, y) {
+        const margin = 10;
+        const { width, height } = this._measureSize();
+        const maxX = Math.max(margin, window.innerWidth - width - margin);
+        const maxY = Math.max(margin, window.innerHeight - height - margin);
+        return {
+            x: Math.min(Math.max(margin, x), maxX),
+            y: Math.min(Math.max(margin, y), maxY)
+        };
+    }
+
+    _applyPosition(x, y) {
+        if (!this.widget) return;
+        const p = this._clampPosition(x, y);
+        this.pos = p;
+        this.widget.style.left = p.x + 'px';
+        this.widget.style.top = p.y + 'px';
+        this.widget.style.right = 'auto';
+        this.widget.style.bottom = 'auto';
+    }
+
+    // Возвращает виджет в пределы экрана после поворота/изменения размера окна.
+    reclampPosition() {
+        if (!this.widget || this.pos.x === null || this.pos.y === null) return;
+        this._applyPosition(this.pos.x, this.pos.y);
     }
 
     // ---------- Секундомер ----------
@@ -562,6 +598,7 @@ class TimeWidget {
     swUpdateButton() {
         if (!this.swStartBtn) return;
         this.swStartBtn.textContent = this.swRunning ? '⏸' : '▶';
+        this.swStartBtn.title = this.swRunning ? 'Пауза секундомера' : 'Запустить секундомер';
     }
 
     // ---------- Таймер ----------
@@ -569,9 +606,10 @@ class TimeWidget {
     renderPresets() {
         if (!this.cdPresetsEl) return;
         this.cdPresetsEl.innerHTML = this.PRESETS.map(m =>
-            `<button class="tw-preset" data-min="${m}">${m}м</button>`).join('') + `
-            <input type="number" class="tw-custom-input" id="cdCustomInput" min="1" max="999" placeholder="мин">
-            <button class="tw-preset" id="cdCustomApply">OK</button>`;
+            `<button class="tw-preset" data-min="${m}" title="Установить таймер на ${m} мин">${m}м</button>`).join('') + `
+            <input type="number" class="tw-custom-input" id="cdCustomInput" min="1" max="999" placeholder="мин"
+                title="Своё значение таймера в минутах">
+            <button class="tw-preset" id="cdCustomApply" title="Применить введённое значение">OK</button>`;
         this.cdPresetsEl.querySelectorAll('.tw-preset[data-min]').forEach(btn => {
             btn.addEventListener('click', () => this.cdSetTime(parseInt(btn.dataset.min, 10) * 60 * 1000));
         });
@@ -679,9 +717,16 @@ class TimeWidget {
 
     cdUpdateButton() {
         if (!this.cdStartBtn) return;
-        if (this.cdOvertime || this.cdFinished) this.cdStartBtn.textContent = '↺';
-        else if (this.cdRunning) this.cdStartBtn.textContent = '⏸';
-        else this.cdStartBtn.textContent = '▶';
+        if (this.cdOvertime || this.cdFinished) {
+            this.cdStartBtn.textContent = '↺';
+            this.cdStartBtn.title = 'Перезапустить таймер';
+        } else if (this.cdRunning) {
+            this.cdStartBtn.textContent = '⏸';
+            this.cdStartBtn.title = 'Пауза таймера';
+        } else {
+            this.cdStartBtn.textContent = '▶';
+            this.cdStartBtn.title = 'Запустить таймер';
+        }
     }
 
     // ---------- Звук ----------

@@ -154,8 +154,6 @@ body.rgb-mode {
     --accent-soft: hsl(var(--rgb-hue), 50%, 65%);
     --accent-deep: hsl(var(--rgb-hue), 70%, 40%);
     --accent-bright: hsl(var(--rgb-hue), 95%, 70%);
-    --accent-dark: hsl(var(--rgb-hue), 55%, 25%);
-    --accent-muted: hsl(var(--rgb-hue), 40%, 50%);
     --accent-invert: hsl(calc(var(--rgb-hue) + 180), 85%, 60%);
 }
 
@@ -257,10 +255,6 @@ body.rgb-mode .weather-widget {
     box-shadow:
         0 10px 30px rgba(0, 0, 0, 0.3),
         0 0 30px hsla(var(--rgb-hue), 90%, 60%, 0.35);
-}
-
-body.rgb-mode .weather-city {
-    border-bottom-color: hsla(var(--rgb-hue), 80%, 60%, 0.5);
 }
 
 body.rgb-mode #hueSlider::-webkit-slider-thumb,

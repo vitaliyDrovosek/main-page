@@ -7,7 +7,6 @@ class StickyNotes {
         this.dragEl = null;
         this.dragOffsetX = 0;
         this.dragOffsetY = 0;
-        this.dragRect = null;
         this.saveTimers = new Map();
 
         this.boundMouseMove = this.onDragMove.bind(this);
@@ -179,7 +178,7 @@ class StickyNotes {
                     ta.style.maxHeight = '';
                     ta.style.overflowY = '';
                 }
-                // если размер ручной — textarea заполняет стикер
+                // РµСЃР»Рё СЂР°Р·РјРµСЂ СЂСѓС‡РЅРѕР№ вЂ” textarea Р·Р°РїРѕР»РЅСЏРµС‚ СЃС‚РёРєРµСЂ
                 if (note.height) this.fitTextareaToNote(ta, el);
                 else this.autoGrowText(ta);
             }
@@ -230,7 +229,7 @@ class StickyNotes {
                     <button class="sticky-copy" title="РљРѕРїРёСЂРѕРІР°С‚СЊ">
                         <span class="iconify" data-icon="mdi:content-copy"></span>
                     </button>
-                    <button class="sticky-read-more" style="display:none;">
+                    <button class="sticky-read-more" style="display:none;" title="Р Р°Р·РІРµСЂРЅСѓС‚СЊ Р·Р°РјРµС‚РєСѓ">
                         <span class="sticky-read-more-text">Р Р°Р·РІРµСЂРЅСѓС‚СЊ</span>
                     </button>
                 </div>
@@ -308,7 +307,7 @@ class StickyNotes {
 
         requestAnimationFrame(() => {
             if (note.height) {
-                // ручной размер — textarea растягивается вместе со стикером
+                // СЂСѓС‡РЅРѕР№ СЂР°Р·РјРµСЂ вЂ” textarea СЂР°СЃС‚СЏРіРёРІР°РµС‚СЃСЏ РІРјРµСЃС‚Рµ СЃРѕ СЃС‚РёРєРµСЂРѕРј
                 this.fitTextareaToNote(textEl, el);
             } else {
                 this.autoGrowText(textEl);
@@ -347,9 +346,9 @@ class StickyNotes {
     }
 
     /**
-     * Переводит textarea в режим "заполни родителя".
-     * Используется, когда у стикера задан note.height (ручной ресайз).
-     * Тогда textarea растягивается/сжимается вместе с .sticky-note.
+     * РџРµСЂРµРІРѕРґРёС‚ textarea РІ СЂРµР¶РёРј "Р·Р°РїРѕР»РЅРё СЂРѕРґРёС‚РµР»СЏ".
+     * РСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ, РєРѕРіРґР° Сѓ СЃС‚РёРєРµСЂР° Р·Р°РґР°РЅ note.height (СЂСѓС‡РЅРѕР№ СЂРµСЃР°Р№Р·).
+     * РўРѕРіРґР° textarea СЂР°СЃС‚СЏРіРёРІР°РµС‚СЃСЏ/СЃР¶РёРјР°РµС‚СЃСЏ РІРјРµСЃС‚Рµ СЃ .sticky-note.
      */
     fitTextareaToNote(ta, noteEl) {
         if (!ta) return;
@@ -371,6 +370,7 @@ class StickyNotes {
         // Р’ СЂР°Р·РІС‘СЂРЅСѓС‚РѕРј вЂ” РІСЃРµРіРґР° РїРѕРєР°Р·С‹РІР°РµРј В«РЎРІРµСЂРЅСѓС‚СЊВ»
         if (el.classList.contains('expanded')) {
             btn.style.display = 'flex';
+            btn.title = 'РЎРІРµСЂРЅСѓС‚СЊ Р·Р°РјРµС‚РєСѓ';
             if (textSpan) textSpan.textContent = 'РЎРІРµСЂРЅСѓС‚СЊ';
             return;
         }
@@ -385,6 +385,7 @@ class StickyNotes {
         // РРЅР°С‡Рµ вЂ” РїСЂРѕРІРµСЂСЏРµРј РїРµСЂРµРїРѕР»РЅРµРЅРёРµ
         if (textEl.scrollHeight > textEl.clientHeight + 4) {
             btn.style.display = 'flex';
+            btn.title = 'Р Р°Р·РІРµСЂРЅСѓС‚СЊ Р·Р°РјРµС‚РєСѓ';
             if (textSpan) textSpan.textContent = 'Р Р°Р·РІРµСЂРЅСѓС‚СЊ';
         } else {
             btn.style.display = 'none';
@@ -506,7 +507,7 @@ class StickyNotes {
             this.app.storage.save();
         }
 
-        // после ресайза — textarea заполняет стикер
+        // РїРѕСЃР»Рµ СЂРµСЃР°Р№Р·Р° вЂ” textarea Р·Р°РїРѕР»РЅСЏРµС‚ СЃС‚РёРєРµСЂ
         const ta = el.querySelector('.sticky-text');
         if (ta && note && note.height) {
             this.fitTextareaToNote(ta, el);
@@ -522,7 +523,6 @@ class StickyNotes {
         const rect = el.getBoundingClientRect();
         this.dragOffsetX = e.clientX - rect.left;
         this.dragOffsetY = e.clientY - rect.top;
-        this.dragRect = { width: rect.width, height: rect.height };
         el.classList.add('dragging');
         el.style.zIndex = 10000;
 
@@ -568,7 +568,6 @@ class StickyNotes {
 
         this.draggingId = null;
         this.dragEl = null;
-        this.dragRect = null;
 
         if (Number.isFinite(x) && Number.isFinite(y)) {
             this.updateNotePosition(id, x, y);

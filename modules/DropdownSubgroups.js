@@ -16,15 +16,6 @@ class DropdownSubgroups {
         this.syncAll();
     }
 
-    destroy() {
-        if (this._observer) {
-            this._observer.disconnect();
-            this._observer = null;
-        }
-        this._groups = [];
-        this._initialized = false;
-    }
-
     _scan() {
         this._groups = [];
         const subgroups = document.querySelectorAll('.dropdown-subgroup');
@@ -79,23 +70,6 @@ class DropdownSubgroups {
         const collapsed = invert ? !off : off;
         subgroup.classList.toggle('collapsed', collapsed);
         
-    }
-
-    
-    expandAll() {
-        for (const g of this._groups) {
-            g.subgroup.classList.remove('collapsed');
-        }
-    }
-    collapseAll() {
-        for (const g of this._groups) {
-            g.subgroup.classList.add('collapsed');
-        }
-    }
-    rescan() {
-        this._scan();
-        this._observe();
-        this.syncAll();
     }
 }
 

@@ -290,16 +290,11 @@
         min-width: 0;
         padding: 14px;
         border-radius: 18px;
+        max-height: calc(100dvh - 20px);
+        max-width: calc(100vw - 20px);
+        overflow-y: auto;
     }
 
-    .weather-temp { font-size: 2rem; }
-    .weather-icon { font-size: 2.4rem; }
-    .weather-details { gap: 8px; }
-    .weather-detail { padding: 6px; }
-    .weather-detail-label { font-size: 0.7rem; }
-    .weather-detail-value { font-size: 0.9rem; }
-
-    
     .game-icons {
         top: calc(12px + var(--safe-top));
         left: calc(12px + var(--safe-left));
@@ -318,6 +313,9 @@
         left: auto;
         right: calc(20px + var(--safe-right));
         bottom: calc(90px + var(--safe-bottom));
+        max-height: calc(100dvh - 20px);
+        max-width: calc(100vw - 20px);
+        overflow-y: auto;
     }
 
     .tw-display { font-size: 1.5rem; }
@@ -386,7 +384,6 @@
     
     .time-center { gap: 16px; }
     .time-center-item { font-size: clamp(1.8rem, 12vw, 3rem); letter-spacing: 2px; }
-    .time-center-sep { font-size: clamp(1rem, 6vw, 1.6rem); }
 
     
     .glow-ball,
@@ -507,9 +504,6 @@
     }
 
     .weather-widget { padding: 10px; }
-    .weather-temp { font-size: 1.6rem; }
-    .weather-icon { font-size: 2rem; }
-    .weather-main { margin-bottom: 8px; }
 
     .aim-overlay {
         padding-top: calc(50px + var(--safe-top));

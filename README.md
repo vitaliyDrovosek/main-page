@@ -15,10 +15,9 @@
 
 ### Структура проекта:
 - `index.html` — основной HTML-каркас, разметка виджетов, модальных окон и дропдаун-меню.
-- `styles.css` — главный файл стилей, импортирующий модульные CSS из папки `styles/`.
+- `styles/` — стили (разбиты по компонентам: база, часы, группы, заметки и т.д.). Подключаются в `index.html` отдельными `<link>` для параллельной загрузки.
 - `app.js` — точка входа, инициализация всех модулей и управление состоянием.
 - `modules/` — логика (каждый виджет или фича вынесены в отдельный класс).
-- `styles/` — стили (разбиты по компонентам: база, часы, группы, заметки и т.д.).
 
 ---
 
@@ -72,7 +71,6 @@
 
 - **`index.html`** — логические группы дропдауна обёрнуты в `.dropdown-subgroup[data-subgroup-parent]` с подпунктами внутри `.dropdown-subgroup-items`. Родительская кнопка каждой группы вынесена **наружу** `.dropdown-subgroup-items` (внутри `.dropdown-subgroup`), чтобы при сворачивании она оставалась видимой. Затронуты: «Виджет времени», «Счётчик дней», «Зернистый шум», «Частицы», «Режим ожидания», «История поиска», «Стикеры», «Блокировка групп».
 - **`modules/DropdownSubgroups.js`** — новый модуль: сканирует `.dropdown-subgroup[data-subgroup-parent]`, находит индикатор по `data-subgroup-parent` (или по первому `.toggle-indicator` внутри), подписывается на `MutationObserver` за классом `off`. При `.off` ставит `.collapsed` на подгруппу и `display: none` на `.dropdown-subgroup-items` (или только CSS-класс — в зависимости от версии). Поддерживает `data-subgroup-invert="true"` — для «Блокировки групп» логика **инвертирована**: когда блокировка **выключена** (`.off`), подгруппа **развёрнута** (видна «Добавить группу»); когда **включена** — свёрнута.
-- **`modules/DropdownCollapse.js`** — убран из `app.js` (конфликтовал с `DropdownSubgroups`: двойное скрытие подпунктов). Файл оставлен, но не импортируется.
 - **`modules/HUD.js`** — в `updateGroupsLockIndicator()` убрано JS-скрытие «Добавить группу» через `style.display` — теперь скрытие через `.collapsed` (CSS), как у остальных подгрупп.
 - **`styles/dropdown.css`** — переработан:
   - подгруппа — карточка с **левой акцентной полосой** (`::before`), тускнеющей при `.collapsed`;
@@ -82,3 +80,45 @@
   - скроллбар — кастомный accent-градиент (desktop/Android), `scrollbar-width` (Firefox), скрыт на мобилке (`@media max-width: 768px`);
   - фон меню и кнопок — `var(--glass)` / `rgba(255,255,255,0.05)`, рамки `accent-soft` / `accent-muted` (как в старом `dropdown.css`);
   - убраны «объёмные» тени (`inset`), hover-`translateY`, градиенты фона у кнопок/меню/кнопки ☰.
+
+### 5. Таймер: уход в минус + красный цвет
+
+- **`modules/TimeWidget.js`** — таймер **не останавливается** на 0: `cdRemaining` уходит в минус, `cdRunning` остаётся `true`, `cdTick` продолжает `requestAnimationFrame`. Флаг `cdOvertime` ставится **один раз** при переходе `+` → `−` (ловится по `prev > 0 && overtime && !cdOvertime`). `cdFormat` поддерживает отрицательные (`-MM:SS`). Звук `cdPlaySound()` вызывается **один раз** при переходе, флаг `_cdSoundPlayed` сбрасывается в `cdSetTime`, `cdReset`, `cdStart` (если старт не из минуса), `restoreState`. Кнопка при overtime — `↺` (сброс + старт). `isActive()` возвращает `true`, пока идёт секундомер или таймер; для показа в режиме сна используются `isSwStarted()` / `isCdStarted()`.
+- **`styles/time-widget.cs  ёs`** — добавлены `.overtime` для `.tw-display`, `.time-center-item`, `.top-time-item`: красный цвет + пульсация (`cdFlash`), как у `.finished`.
+
+### 6. Низкая высота вьюпорта (1526×730)
+
+- **`styles/clock.css`** — `.clock` стал `position: relative` (был `absolute`), `margin: 0 auto 12px`, `font-size: clamp(2rem, 6vw, 3.2rem)` — **не наезжает** на поиск. `body.hud-hidden .clock` остался `absolute` (в sleep уезжает вправо).
+- **`styles/base.css`** — добавлены `@media (max-height: 800px)` и `@media (max-height: 700px)`: сжатие `.top` (padding, min-height), `.search-input`, `.groups` (margin-bottom), `.countdown-widget` (margin, max-height) — **убирает скролл** страницы на низких экранах.
+- **`styles/groups.css`** — группы **сжимаются** на низких экранах: `.group` width `clamp(180px, 18vw, 220px)`, padding `clamp(10px, 1.5vh, 15px)`, `.link` padding/font-size через `clamp`, `@media (max-height: 800px)` → `width: 180px`, `@media (max-height: 700px)` → `width: 160px`. Всё влезает.
+
+### 7. Счётчик дней: glow не обрезается
+
+- **`styles/countdown.css`** — `box-shadow` карточек заменён на **`filter: drop-shadow`** (не обрезается `overflow`/`clip-path` родителя). `max-width: 900px` (3 карточки в ряд), `margin: 8px auto clamp(80px, 10vh, 100px)`, `max-height: 32vh` + `@media` 26vh/24vh. `padding: 20px` у `.countdown-list` — место под glow. `@media (max-height: 800px)` — сжатие карточек.
+
+### 8. Чистка и оптимизация (без изменения внешнего вида)
+
+- **Загрузка CSS**: в `styles.css` было 28 вложенных `@import`, из-за чего стили грузились последовательно (waterfall). Импорты заменены на отдельные `<link rel="stylesheet">` в `index.html` — браузер загружает файлы параллельно. Порядок каскада сохранён, `styles.css` удалён.
+- **Внешние ресурсы**: подключение `iconify` переведено на `defer` (не блокирует парсинг страницы), добавлены `preconnect` к `code.iconify.design` и `mc.yandex.ru`.
+- **Иконки**: удалены неиспользуемые `icons/icon-512.png` и `icons/icon-maskable-512.png` — они байт-в-байт совпадали с `icon-192.png`, на который ссылается `index.html`.
+- **Мёртвый JS** (удалены методы и поля, у которых не было вызовов):
+  - `app.js` — `setDrag()`, `isDragging()`, `window.__dragActive`, `window.__dragEndTimer`;
+  - `Achievements.js` — `trackPaletteSaved()`;
+  - `Background.js` — `unmuteIfNeeded()`;
+  - `Clock.js` — `stopClock()`;
+  - `Countdown.js` — `stopTick()`;
+  - `DropdownSubgroups.js` — `destroy()`, `expandAll()`, `collapseAll()`, `rescan()`;
+  - `Grain.js` — `refresh()`, `setOpacity()` (ползунок шума обновляется собственным обработчиком в `init()`);
+  - `HUD.js` — `removeActivityListeners()`, `toggleSleepGrain()`, `updateSleepGrainIndicator()`, `toggleSleepBlur()`, `updateSleepBlurIndicator()`, `applySleepStyles()`, `setGrainOpacity()` (кнопок, которые бы их вызывали, в разметке нет);
+  - `Particles.js` — `_positionPanel()`;
+  - `TimeWidget.js` — `isCdActive()`, `isSwRunning()`, `isCdRunning()` (используются `isSwStarted()` / `isCdStarted()` / `isActive()`);
+  - `Hue.js` — поле `_applyPending` и запись неиспользуемых CSS-переменных;
+  - `StickyNotes.js`, `TimeWidget.js`, `Weather.js` — неиспользуемое поле `dragRect` (размеры берутся из `getBoundingClientRect()` при перетаскивании).
+- **Мёртвый CSS**:
+  - `styles/responsive.css` — `.weather-temp`, `.weather-icon`, `.weather-main`, `.weather-details`, `.weather-detail*`, `.time-center-sep` (этих элементов в разметке нет, погода использует `.tw-display`);
+  - `styles/particles.css` — `.particles-settings-backdrop`, `.particles-settings-backdrop.visible`;
+  - `styles/hue.css` — `body.rgb-mode .weather-city`;
+  - `styles/mobile-hud.css` — `body.hud-hidden.sleep-no-grain` и `.sleep-no-blur` (классы больше никем не ставятся);
+  - `styles/base.css`, `styles/hue.css` — неиспользуемые переменные `--glass-hover`, `--history-bg`, `--ui-brightness`, `--ui-opacity`, `--accent-dark`, `--accent-muted` (используются только их `-rgb`-варианты).
+- **Хранилище**: из `Storage.js` убраны неиспользуемые ключи `sleepGrainEnabled` / `sleepBlurEnabled`. Старые конфиги с этими полями продолжают загружаться без ошибок.
+- **Проверка**: меню и подгруппы, ползунок шума, погода, таймер/секундомер и режим сна работают как раньше; ошибок в консоли нет.

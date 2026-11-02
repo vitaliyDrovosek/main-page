@@ -25,9 +25,6 @@ import DropdownSubgroups from './modules/DropdownSubgroups.js';
 
 class App {
     constructor() {
-        window.__dragActive = false;
-        window.__dragEndTimer = null;
-
         this.searchEngines = {
             yandex: { name: 'Yandex', url: 'https://yandex.ru/search/?text=' },
             google: { name: 'Google', url: 'https://www.google.com/search?q=' }
@@ -67,22 +64,6 @@ class App {
 
         window.app = this;
         this.init();
-    }
-
-    setDrag(active) {
-        window.__dragActive = active;
-        if (active) {
-            clearTimeout(window.__dragEndTimer);
-        } else {
-            clearTimeout(window.__dragEndTimer);
-            window.__dragEndTimer = setTimeout(() => {
-                window.__dragActive = false;
-            }, 100);
-        }
-    }
-
-    isDragging() {
-        return window.__dragActive === true;
     }
 
     init() {

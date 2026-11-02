@@ -165,11 +165,6 @@ class Achievements {
         if (this.app.data.rgbMode) this.unlock('rgb_master');
     }
 
-    trackPaletteSaved() {
-        const count = (this.app.data.savedPalettes || []).length;
-        if (count >= 5) this.unlock('customizer');
-    }
-
     trackGlowOff(enabled) {
         if (!enabled) this.unlock('glow_off');
     }
