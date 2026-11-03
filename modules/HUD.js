@@ -187,9 +187,14 @@ class HUD {
         this.app.timeWidget?.renderSleepTime?.();
     }
 
+    isDropdownOpen() {
+        return !!document.getElementById('dropdownMenu')?.classList.contains('show');
+    }
+
     hide() {
         if (!this.tabVisible) return;
         if (!this.app.data.sleepModeEnabled) return;
+        if (this.isDropdownOpen()) return;
         if (!this.app.data.timeAutoSleepEnabled && this.app.timeWidget?.isActive()) return;
         document.body.classList.add('hud-hidden');
         this.app.timeWidget?.renderSleepTime?.();
@@ -205,6 +210,7 @@ class HUD {
     resetTimer() {
         this.show();
         this.clearSleepTimer();
+        if (this.isDropdownOpen()) return;
         if (this.app.data.sleepModeEnabled && this.tabVisible) {
             if (!this.app.data.timeAutoSleepEnabled && this.app.timeWidget?.isActive()) return;
             this.timer = setTimeout(() => this.hide(), this.TIMEOUT);
@@ -322,6 +328,9 @@ class HUD {
         if (menu) menu.classList.remove('show');
         document.body.classList.remove('dropdown-open');
         if (overlay) overlay.classList.remove('visible');
+        // После закрытия меню отсчёт до сна запускается заново. Если HUD скрыли
+        // вручную кнопкой «Скрыть HUD», не показываем его обратно.
+        if (!document.body.classList.contains('hud-hidden')) this.resetTimer();
     }
 
     toggleGrain() { this.app.grain?.toggle(); }

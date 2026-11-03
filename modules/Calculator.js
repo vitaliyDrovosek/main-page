@@ -8,11 +8,11 @@ class Calculator {
 
         
         
-        const hasOperator = /[+\-*/()%]/.test(s);
+        const hasOperator = /[+\-*/()%^]/.test(s);
         const onlyDigits = /^[\d\s.]+$/.test(s);
         if (onlyDigits) return false;
 
-        return /^[\d\s+\-*/().%]+$/.test(s) && /\d/.test(s) && hasOperator;
+        return /^[\d\s+\-*/().%^]+$/.test(s) && /\d/.test(s) && hasOperator;
     }
 
     static hasPercentPhrase(str) {
@@ -59,7 +59,7 @@ class Calculator {
     static _parse(str) {
         if (!str) return null;
         try {
-            const tokens = this.tokenize(str);
+            const tokens = this.tokenize(str.replace(/\*\*/g, '^'));
             if (!tokens.length) return null;
             const parser = new _Parser(tokens);
             const result = parser.parseExpression();
@@ -96,7 +96,7 @@ class Calculator {
                     throw new Error('Invalid number: ' + num);
                 }
                 tokens.push({ type: 'num', value });
-            } else if ('+-*/()%'.includes(ch)) {
+            } else if ('+-*/()%^'.includes(ch)) {
                 tokens.push({ type: 'op', value: ch });
                 i++;
             } else {
@@ -136,13 +136,22 @@ class _Parser {
     }
 
     parseTerm() {
-        let left = this.parseFactor();
+        let left = this.parsePower();
         while (this.peek()?.type === 'op' && (this.peek().value === '*' || this.peek().value === '/')) {
             const op = this.next().value;
-            const right = this.parseFactor();
+            const right = this.parsePower();
             left = op === '*' ? left * right : left / right;
         }
         return left;
+    }
+
+    parsePower() {
+        const base = this.parseFactor();
+        if (this.peek()?.type === 'op' && this.peek().value === '^') {
+            this.next();
+            return Math.pow(base, this.parsePower());
+        }
+        return base;
     }
 
     parseFactor() {

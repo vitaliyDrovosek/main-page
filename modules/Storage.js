@@ -42,6 +42,10 @@ class Storage {
             searchEngine: savedData.searchEngine || 'yandex',
             searchHistory: arr(savedData.searchHistory),
             historyEnabled: savedData.historyEnabled ?? true,
+            calculatorEnabled: savedData.calculatorEnabled ?? true,
+            translatorEnabled: savedData.translatorEnabled ?? false,
+            randomizerEnabled: savedData.randomizerEnabled ?? false,
+            randomizerPos: savedData.randomizerPos ?? null,
             weatherEnabled: savedData.weatherEnabled ?? false,
             weatherPos: savedData.weatherPos ?? null,
             sleepModeEnabled: savedData.sleepModeEnabled ?? true,
@@ -223,6 +227,7 @@ class Storage {
         a.search?.updateUI();
         a.history?.render();
         a.audio?.updateIcon?.(a.data.volume, a.data.isMuted);
+        a.toolPanel?.updateIndicators?.();
 
         document.body.classList.toggle('glow-enabled', a.data.glowEnabled !== false);
         document.body.classList.toggle('glow-disabled', a.data.glowEnabled === false);
@@ -289,6 +294,12 @@ class Storage {
         if (a.weather?.widget) {
             a.weather.widget.classList.toggle('visible', a.data.weatherEnabled);
             if (a.data.weatherEnabled) a.weather.fetch();
+        }
+
+        if (a.randomizerWidget) {
+            a.randomizerWidget.updateVisibility();
+            a.randomizerWidget.updateIndicator();
+            a.randomizerWidget.restorePosition?.();
         }
 
         // Погода/курс/итог — ок

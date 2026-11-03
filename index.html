@@ -43,6 +43,7 @@
     <link rel="stylesheet" href="styles/volume.css">
     <link rel="stylesheet" href="styles/hue.css">
     <link rel="stylesheet" href="styles/weather.css">
+    <link rel="stylesheet" href="styles/randomizer.css">
     <link rel="stylesheet" href="styles/groups.css">
     <link rel="stylesheet" href="styles/particles.css">
     <link rel="stylesheet" href="styles/aim.css">
@@ -101,7 +102,7 @@
             <div class="tw-header">
                 <span class="tw-title">Секундомер</span>
             </div>
-            <div class="tw-display" id="swDisplay">00:00.00</div>
+            <div class="tw-display" id="swDisplay">0.00с</div>
             <div class="tw-controls">
                 <button class="tw-btn tw-btn-primary" id="swStartBtn" title="Запустить секундомер">▶</button>
                 <button class="tw-btn" id="swLapBtn" title="Засечь круг">◉</button>
@@ -156,6 +157,36 @@
 
             <div class="tw-controls">
                 <button class="tw-btn tw-btn-primary" id="weatherRefreshBtn" title="Обновить данные о погоде">↻ Обновить</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="time-widget randomizer-widget" id="randomizerWidget">
+        <div class="tw-drag" id="randomizerDrag" title="Перетащить">⠿</div>
+
+        <div class="tw-block">
+            <div class="tw-header">
+                <span class="tw-title">Рандомайзер</span>
+                <span class="tw-title" id="randomizerKind">Число</span>
+            </div>
+            <div class="tw-display" id="randomizerValue">—</div>
+            <div class="randomizer-detail" id="randomizerDetail">Задайте диапазон</div>
+
+            <div class="randomizer-range">
+                <label class="randomizer-field" for="randomizerMin">
+                    <span>От</span>
+                    <input type="number" id="randomizerMin" value="1" inputmode="numeric">
+                </label>
+                <label class="randomizer-field" for="randomizerMax">
+                    <span>До</span>
+                    <input type="number" id="randomizerMax" value="100" inputmode="numeric">
+                </label>
+            </div>
+
+            <div class="tw-controls">
+                <button class="tw-btn tw-btn-primary" id="randomizerNumberBtn" title="Случайное число из диапазона">Число</button>
+                <button class="tw-btn" id="randomizerDiceBtn" title="Бросить кубик d6">Кубик</button>
+                <button class="tw-btn" id="randomizerCoinBtn" title="Подбросить монетку">Монетка</button>
             </div>
         </div>
     </div>
@@ -473,10 +504,30 @@
 
                     <div class="dropdown-divider"></div>
 
+                    <button class="dropdown-item" onclick="app.toolPanel.toggleTool('calculator')"
+                        id="calculatorToggleBtn" title="Показывать результат вычислений под строкой поиска">
+                        <span>Калькулятор</span>
+                        <span id="calculatorIndicator" class="toggle-indicator"></span>
+                    </button>
+
+                    <button class="dropdown-item" onclick="app.toolPanel.toggleTool('translator')"
+                        id="translatorToggleBtn" title="Переводить текст между русским и английским в строке поиска. Нужен интернет">
+                        <span>Переводчик</span>
+                        <span id="translatorIndicator" class="toggle-indicator"></span>
+                    </button>
+
+                    <div class="dropdown-divider"></div>
+
                     <button class="dropdown-item" onclick="app.weather.toggle()" id="weatherToggleBtn"
                         title="Показывать виджет погоды">
                         <span>Показать погоду</span>
                         <span id="weatherIndicator" class="toggle-indicator"></span>
+                    </button>
+
+                    <button class="dropdown-item" onclick="app.randomizerWidget.toggle()" id="randomizerToggleBtn"
+                        title="Показывать виджет со случайным числом, кубиком и монеткой">
+                        <span>Показать рандомайзер</span>
+                        <span id="randomizerIndicator" class="toggle-indicator"></span>
                     </button>
 
                     <div class="dropdown-divider"></div>
@@ -711,8 +762,10 @@
 
     <div class="time-center" id="timeCenter">
         <div class="time-center-item time-center-clock" id="timeCenterClock"></div>
-        <div class="time-center-item hidden" id="timeCenterSw"></div>
-        <div class="time-center-item hidden" id="timeCenterCd"></div>
+        <div class="time-center-side">
+            <div class="time-center-item hidden" id="timeCenterSw" data-label="Секундомер"></div>
+            <div class="time-center-item hidden" id="timeCenterCd" data-label="Таймер"></div>
+        </div>
     </div>
 
     <script type="module" src="app.js"></script>
