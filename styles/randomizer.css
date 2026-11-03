@@ -1,0 +1,117 @@
+.time-widget.randomizer-widget {
+    min-width: 230px;
+    max-width: 270px;
+}
+
+.randomizer-widget .tw-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.randomizer-widget .tw-header .tw-title:last-child {
+    font-size: 0.7rem;
+    opacity: 0.5;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 400;
+}
+
+.randomizer-widget .tw-display {
+    font-size: 2.4rem;
+    letter-spacing: 0;
+    line-height: 1.1;
+    margin: 6px 0 0;
+    word-break: break-word;
+}
+
+.randomizer-widget .tw-display.coin {
+    font-size: 1.9rem;
+    letter-spacing: 1px;
+}
+
+.randomizer-detail {
+    min-height: 1.1em;
+    margin-top: 2px;
+    text-align: center;
+    font-size: 0.72rem;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    opacity: 0.6;
+}
+
+.randomizer-range {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 2px;
+}
+
+.randomizer-field {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 6px 8px;
+    border-radius: 10px;
+    background: rgba(var(--accent-dark-rgb), 0.25);
+    border: 1px solid rgba(var(--accent-soft-rgb), 0.1);
+}
+
+.randomizer-field span {
+    font-size: 0.62rem;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    opacity: 0.65;
+}
+
+.randomizer-field input {
+    width: 100%;
+    padding: 2px 0;
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 1rem;
+    outline: none;
+}
+
+.randomizer-field:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.35);
+}
+
+.randomizer-field input::-webkit-outer-spin-button,
+.randomizer-field input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.randomizer-field input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.randomizer-widget .tw-controls {
+    margin-top: 2px;
+}
+
+.randomizer-widget .tw-btn {
+    padding: 8px 6px;
+    font-size: 0.76rem;
+}
+
+@media (max-width: 768px) {
+    .time-widget.randomizer-widget {
+        min-width: 210px;
+        max-width: 250px;
+    }
+
+    .randomizer-widget .tw-display {
+        font-size: 2rem;
+    }
+
+    .randomizer-widget .tw-display.coin {
+        font-size: 1.6rem;
+    }
+}

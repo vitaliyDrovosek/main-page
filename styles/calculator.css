@@ -67,6 +67,122 @@
     padding: 2px 8px;
 }
 
+.tool-result {
+    align-items: flex-start;
+}
+
+.tool-result-main {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+    flex: 1;
+    min-width: 0;
+}
+
+.tool-result-label {
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    opacity: 0.7;
+}
+
+.tool-result-source {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    opacity: 0.7;
+    font-family: 'Consolas', 'Monaco', monospace;
+}
+
+.tool-result .tool-result-value {
+    white-space: normal;
+    word-break: break-word;
+    padding: 2px 0;
+    font-size: clamp(1.05rem, 2.2vh, 1.3rem);
+    line-height: 1.3;
+}
+
+.tool-result-detail {
+    font-size: 0.66rem;
+    color: var(--text-secondary);
+    opacity: 0.55;
+}
+
+.tool-result-error .tool-result-detail {
+    color: #ff8a8a;
+    opacity: 0.9;
+}
+
+.tool-result-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.tool-result-pending {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    opacity: 0.75;
+}
+
+.tool-spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(var(--accent-soft-rgb), 0.3);
+    border-top-color: var(--accent-bright);
+    border-radius: 50%;
+    animation: toolSpin 0.7s linear infinite;
+}
+
+@keyframes toolSpin {
+    to { transform: rotate(360deg); }
+}
+
+.tool-action-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(var(--accent-rgb), 0.12);
+    border: 1px solid rgba(var(--accent-soft-rgb), 0.25);
+    border-radius: 10px;
+    color: var(--accent-bright);
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+    transition: transform 0.2s ease, background 0.2s ease,
+                border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tool-action-btn .iconify {
+    width: 15px;
+    height: 15px;
+    color: var(--accent-bright);
+}
+
+.tool-action-btn:hover {
+    background: var(--accent);
+    border-color: var(--accent-bright);
+    transform: translateY(-1px);
+    box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.5);
+}
+
+.tool-action-btn:hover .iconify {
+    color: #1a1a1a;
+}
+
 .calc-copy-btn {
     width: 32px;
     height: 32px;
@@ -135,5 +251,15 @@
     .calc-copy-btn {
         font-size: 0.65rem;
         padding: 5px 10px;
+    }
+    .tool-result-main {
+        width: 100%;
+        flex-basis: 100%;
+    }
+    .tool-result-actions {
+        margin-left: auto;
+    }
+    .tool-result .tool-result-value {
+        font-size: 1.15rem;
     }
 }

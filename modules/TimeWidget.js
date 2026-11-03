@@ -264,14 +264,14 @@ class TimeWidget {
             }
             el.textContent = prev;
             if (max > 0) {
-                el.style.width = max + 'px';
+                el.style.width = '';
                 el.style.minWidth = max + 'px';
             }
         };
 
         const swSamples = [];
         for (let i = 0; i <= 9; i++) {
-            swSamples.push(`${i}${i}:${i}${i}.${i}${i}`);
+            swSamples.push(`${i}${i}.${i}${i}с`);
         }
         measure(sw, swSamples);
 
@@ -553,12 +553,48 @@ class TimeWidget {
         }
     }
 
+    _formatDuration(ms) {
+        const negative = ms < 0;
+        // Таймер округляет остаток вверх, чтобы 0.2 с ещё показывались как 00:01.
+        const totalSeconds = Math.ceil(Math.abs(ms) / 1000);
+
+        const days = Math.floor(totalSeconds / 86400);
+        const hours = Math.floor((totalSeconds % 86400) / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        const pad = (n) => String(n).padStart(2, '0');
+        const sign = negative ? '-' : '';
+
+        if (days > 0) {
+            return `${sign}${days}д ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+        }
+        if (hours > 0) {
+            return `${sign}${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+        }
+        return `${sign}${pad(minutes)}:${pad(seconds)}`;
+    }
+
     swFormat(ms) {
-        const total = Math.floor(ms);
-        const m = Math.floor(total / 60000);
-        const s = Math.floor((total % 60000) / 1000);
-        const cs = Math.floor((total % 1000) / 10);
-        return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}.${String(cs).padStart(2, '0')}`;
+        // Секундомер показываем с подписями единиц: 6д 15ч 28м 46с.
+        const totalMs = Math.max(0, ms);
+        const totalSeconds = Math.floor(totalMs / 1000);
+        const days = Math.floor(totalSeconds / 86400);
+        const hours = Math.floor((totalSeconds % 86400) / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        const pad = (n) => String(n).padStart(2, '0');
+
+        if (days > 0) {
+            return `${days}д ${pad(hours)}ч ${pad(minutes)}м ${pad(seconds)}с`;
+        }
+        if (hours > 0) {
+            return `${hours}ч ${pad(minutes)}м ${pad(seconds)}с`;
+        }
+        if (minutes > 0) {
+            return `${minutes}м ${pad(seconds)}с`;
+        }
+        const centiseconds = Math.floor((totalMs % 1000) / 10);
+        return `${seconds}.${pad(centiseconds)}с`;
     }
 
     swRender() {
@@ -699,12 +735,7 @@ class TimeWidget {
     }
 
     cdFormat(ms) {
-        const negative = ms < 0;
-        const total = Math.ceil(Math.abs(ms) / 1000);
-        const m = Math.floor(total / 60);
-        const s = total % 60;
-        const sign = negative ? '-' : '';
-        return `${sign}${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        return this._formatDuration(ms);
     }
 
     cdRender() {

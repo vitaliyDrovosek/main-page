@@ -382,8 +382,17 @@
     .achievement-card-desc { font-size: 0.8rem; }
 
     
-    .time-center { gap: 16px; }
-    .time-center-item { font-size: clamp(1.8rem, 12vw, 3rem); letter-spacing: 2px; }
+    .time-center { gap: 18px; padding: 24px 26px; }
+    .time-center-clock { font-size: clamp(2rem, 8vw, 3rem); letter-spacing: 2px; }
+    .time-center-side { gap: 9px; padding-left: 16px; }
+    .time-center-side .time-center-item {
+        font-size: clamp(1.05rem, 2.6vw, 1.5rem);
+        letter-spacing: 0.5px;
+    }
+    .time-center-side .time-center-item::before {
+        font-size: 0.66rem;
+        letter-spacing: 1.8px;
+    }
 
     
     .glow-ball,
@@ -467,6 +476,28 @@
         min-width: 34px;
         max-width: 34px;
     }
+
+    .time-center {
+        gap: 14px;
+        padding: 20px 22px;
+    }
+
+    .time-center-clock {
+        font-size: clamp(1.6rem, 8vw, 2.2rem);
+    }
+
+    .time-center-side {
+        padding-left: 12px;
+    }
+
+    .time-center-side .time-center-item {
+        font-size: clamp(0.9rem, 3.4vw, 1.2rem);
+    }
+
+    .time-center-side .time-center-item::before {
+        font-size: 0.6rem;
+        letter-spacing: 1.5px;
+    }
 }
 
 @media (max-height: 500px) and (orientation: landscape) {
@@ -516,8 +547,26 @@
         overflow-y: auto;
     }
 
-    .time-center-item {
-        font-size: clamp(1.4rem, 6vw, 2rem);
+    .time-center {
+        gap: 14px;
+        padding: 20px 22px;
+    }
+
+    .time-center-clock {
+        font-size: clamp(1.7rem, 8vw, 2.2rem);
+    }
+
+    .time-center-side {
+        padding-left: 12px;
+    }
+
+    .time-center-side .time-center-item {
+        font-size: clamp(0.88rem, 3.6vw, 1.1rem);
+    }
+
+    .time-center-side .time-center-item::before {
+        font-size: 0.58rem;
+        letter-spacing: 1.5px;
     }
 }
 

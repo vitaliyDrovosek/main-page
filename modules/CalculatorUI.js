@@ -3,157 +3,51 @@ import Calculator from './Calculator.js';
 class CalculatorUI {
     constructor(app) {
         this.app = app;
-        this.input = null;
-        this.container = null;
-        this.lastResult = null;
-        this._downInside = false;
-
-        
-        this._boundDocMouseDown = this._handleDocMouseDown.bind(this);
-        this._boundDocMouseUp = this._handleDocMouseUp.bind(this);
+        this.id = 'calculator';
+        this.setting = 'calculatorEnabled';
+        this.indicatorId = 'calculatorIndicator';
+        this.priority = 10;
     }
 
-    init() {
-        this.input = document.getElementById('searchInput');
-        this.container = document.getElementById('calcResult');
-        if (!this.container || !this.input) return;
-
-        
-        this.container.addEventListener('click', (e) => {
-            const btn = e.target.closest('.calc-copy-btn');
-            if (!btn) return;
-            e.stopPropagation();
-            if (this.lastResult !== null) {
-                this.copyResult(e, this.lastResult);
-            }
-        });
-
-        
-        document.addEventListener('mousedown', this._boundDocMouseDown, true);
-        document.addEventListener('mouseup', this._boundDocMouseUp, true);
-
-        this.input.addEventListener('input', () => this.render());
-        this.input.addEventListener('focus', () => this.render());
-
-        
-        this.input.addEventListener('keydown', (e) => this._handleEnter(e), true);
+    isEnabled() {
+        return this.app.data?.calculatorEnabled !== false;
     }
 
-    _handleDocMouseDown(e) {
-        this._downInside = !!(
-            this.input?.contains(e.target) ||
-            this.container?.contains(e.target)
-        );
-    }
+    render(query) {
+        const value = query?.trim();
+        if (!value || !Calculator.isMathExpression(value)) return null;
 
-    _handleDocMouseUp(e) {
-        const isInside = !!(
-            this.input?.contains(e.target) ||
-            this.container?.contains(e.target)
-        );
-        if (!this._downInside && !isInside) {
-            this.hide();
-        }
-    }
+        const result = Calculator.calculate(value);
+        if (result === null) return null;
 
-    _handleEnter(e) {
-        if (e.key !== 'Enter') return;
+        const display = this.formatResult(result);
 
-        const query = this.input.value?.trim();
-        if (!query) return;
-        if (!Calculator.isMathExpression(query)) return;
-
-        const result = Calculator.calculate(query);
-        if (result === null) return; 
-
-        e.preventDefault();
-        e.stopImmediatePropagation();
-
-        this.copyToClipboard(String(result));
-        this.lastResult = null;
-        this.input.value = '';
-        this.hide();
-    }
-
-    render() {
-        if (!this.container || !this.input) return;
-        const query = this.input.value?.trim() || '';
-
-        if (query && Calculator.isMathExpression(query)) {
-            const result = Calculator.calculate(query);
-            if (result !== null) {
-                this.lastResult = String(result);
-                this.container.innerHTML = `
-                    <div class="calc-result">
-                        <span class="calc-result-expression">${this.escapeHtml(query)}</span>
-                        <div class="calc-result-equals">
-                            <span class="calc-result-value">= ${result}</span>
-                            <button class="calc-copy-btn" title="Копировать"><span class="iconify" data-icon="mdi:content-copy"></span></button>
-                        </div>
+        return {
+            html: `
+                <div class="calc-result tool-result">
+                    <span class="calc-result-expression">${this.escapeHtml(value)}</span>
+                    <div class="calc-result-equals">
+                        <span class="calc-result-value">= ${this.escapeHtml(display)}</span>
+                        <button class="calc-copy-btn" title="Копировать"><span class="iconify" data-icon="mdi:content-copy"></span></button>
                     </div>
-                `;
-                this.container.classList.add('visible');
-                return;
-            }
-        }
-
-        this.lastResult = null;
-        this.container.replaceChildren();
-        this.container.classList.remove('visible');
+                </div>
+            `,
+            copyValue: display
+        };
     }
 
-    hide() {
-        if (this.container) {
-            this.container.classList.remove('visible');
-        }
-        this.lastResult = null;
-    }
-
-    copyResult(event, value) {
-        if (value === undefined || value === null) return;
-        this.copyToClipboard(value);
-
-        const btn = event?.target?.closest?.('.calc-copy-btn');
-        if (btn) {
-            btn.classList.add('flash');
-            setTimeout(() => btn.classList.remove('flash'), 600);
-        }
-    }
-
-    copyToClipboard(text) {
-        const str = String(text);
-        if (navigator.clipboard?.writeText) {
-            navigator.clipboard.writeText(str).catch(() => this.fallbackCopy(str));
-            return;
-        }
-        this.fallbackCopy(str);
-    }
-
-    fallbackCopy(text) {
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        ta.setAttribute('readonly', '');
-        Object.assign(ta.style, {
-            position: 'fixed',
-            top: '0',
-            left: '0',
-            width: '1px',
-            height: '1px',
-            opacity: '0'
-        });
-        document.body.appendChild(ta);
-        ta.focus();
-        ta.select();
-        ta.setSelectionRange(0, text.length);
-        try { document.execCommand('copy'); } catch {  }
-        document.body.removeChild(ta);
+    formatResult(value) {
+        if (!Number.isFinite(value)) return String(value);
+        if (Number.isInteger(value)) return String(value);
+        return String(Number(value.toFixed(10)));
     }
 
     escapeHtml(text) {
         return String(text || '')
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
     }
 }
 

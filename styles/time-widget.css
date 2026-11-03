@@ -249,11 +249,11 @@ body.hud-hidden .time-widget .tw-display {
     left: 50%;
     transform: translate(-50%, -50%);
     display: none;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    min-width: 240px;
+    gap: 26px;
+    min-width: 260px;
     min-height: 220px;
     padding: 26px 34px;
     border-radius: 26px;
@@ -290,6 +290,38 @@ body.hud-hidden .time-widget .tw-display {
     font-size: clamp(2rem, 6vw, 3rem);
     letter-spacing: 2px;
     line-height: 1;
+}
+
+.time-center-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 10px;
+    padding-left: 24px;
+    border-left: 1px solid rgba(11, 13, 18, 0.18);
+}
+
+/* Если ни таймер, ни секундомер не запущены, правая колонка не занимает место. */
+.time-center-side:not(:has(.time-center-item:not(.hidden))) {
+    display: none;
+}
+
+.time-center-side .time-center-item {
+    font-size: clamp(1.15rem, 2.1vw, 1.6rem);
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+}
+
+.time-center-side .time-center-item::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 3px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.6;
 }
 
 .time-center-item.hidden {
