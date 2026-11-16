@@ -115,6 +115,7 @@ class Hue {
 
     toggleRgbMode() {
         this.rgbMode = !this.rgbMode;
+        this.app.data.rgbMode = this.rgbMode;
         document.body.classList.toggle('rgb-mode', this.rgbMode);
 
         if (this.rgbMode) {
@@ -126,7 +127,6 @@ class Hue {
 
         this.updateRgbButton();
 
-        this.app.data.rgbMode = this.rgbMode;
         if (this.app.storage) this.app.storage.save();
     }
 

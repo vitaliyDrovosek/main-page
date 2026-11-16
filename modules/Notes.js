@@ -1,3 +1,5 @@
+import Icons from './Icons.js';
+
 class Notes {
     constructor(app) {
         this.app = app;
@@ -340,20 +342,20 @@ class Notes {
 
         const pinBtn = this._makeButton('note-action note-pin' + (n.pinned ? ' active' : ''),
             n.pinned ? 'Открепить' : 'Закрепить',
-            n.pinned ? 'mdi:pin' : 'mdi:pin-outline');
+            n.pinned ? 'pin' : 'pin-outline');
         pinBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             this.togglePin(n.id);
         });
 
-        const copyBtn = this._makeButton('note-action note-copy', 'Копировать', 'mdi:content-copy');
+        const copyBtn = this._makeButton('note-action note-copy', 'Копировать', 'copy');
         copyBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             e.preventDefault();
             this.copyNote(n.id);
         });
 
-        const delBtn = this._makeButton('note-action note-delete', 'Удалить', 'mdi:trash-can-outline');
+        const delBtn = this._makeButton('note-action note-delete', 'Удалить', 'trash');
         delBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             this.deleteNote(n.id);
@@ -380,12 +382,7 @@ class Notes {
         const btn = document.createElement('button');
         btn.className = className;
         btn.title = title;
-
-        const span = document.createElement('span');
-        span.className = 'iconify';
-        span.dataset.icon = icon;
-
-        btn.appendChild(span);
+        btn.appendChild(Icons.create(icon));
         return btn;
     }
 

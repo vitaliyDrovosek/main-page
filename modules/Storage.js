@@ -50,6 +50,8 @@ class Storage {
             weatherPos: savedData.weatherPos ?? null,
             sleepModeEnabled: savedData.sleepModeEnabled ?? true,
             sleepTimeout: savedData.sleepTimeout ?? 15,
+            sleepGrainEnabled: savedData.sleepGrainEnabled ?? true,
+            sleepBlurEnabled: savedData.sleepBlurEnabled ?? true,
             blurEnabled: savedData.blurEnabled ?? true,
             particlesEnabled: savedData.particlesEnabled ?? true,
             videoCurrentTime: savedData.videoCurrentTime || 0,
@@ -84,6 +86,11 @@ class Storage {
 
             typingBestWpm: savedData.typingBestWpm ?? null,
             typingGames: savedData.typingGames ?? 0,
+
+            casinoBalance: savedData.casinoBalance ?? 1000,
+            casinoBet: savedData.casinoBet ?? 100,
+            casinoGames: savedData.casinoGames ?? 0,
+            casinoBestWin: savedData.casinoBestWin ?? 0,
 
             achievements: arr(savedData.achievements),
             visitsCount: savedData.visitsCount ?? 0,
@@ -226,6 +233,7 @@ class Storage {
         a.groups?.render();
         a.search?.updateUI();
         a.history?.render();
+        a.history?.updateIndicator?.();
         a.audio?.updateIcon?.(a.data.volume, a.data.isMuted);
         a.toolPanel?.updateIndicators?.();
 
@@ -264,6 +272,9 @@ class Storage {
             a.hud.updateAutoSleepIndicator();
             a.hud.updateGroupsLockIndicator();
             a.hud.updateSleepModeIndicator?.();
+            a.hud.updateSleepGrainIndicator?.();
+            a.hud.updateSleepBlurIndicator?.();
+            a.hud.applySleepStyles?.();
         }
 
         if (a.hue) {

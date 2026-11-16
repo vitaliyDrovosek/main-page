@@ -166,7 +166,7 @@
                 border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.tool-action-btn .iconify {
+.tool-action-btn .svg-icon {
     width: 15px;
     height: 15px;
     color: var(--accent-bright);
@@ -179,7 +179,7 @@
     box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.5);
 }
 
-.tool-action-btn:hover .iconify {
+.tool-action-btn:hover .svg-icon {
     color: #1a1a1a;
 }
 
@@ -200,7 +200,7 @@
                 border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.calc-copy-btn .iconify {
+.calc-copy-btn .svg-icon {
     width: 15px;
     height: 15px;
     color: var(--accent-bright);
@@ -214,7 +214,7 @@
     box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.5);
 }
 
-.calc-copy-btn:hover .iconify {
+.calc-copy-btn:hover .svg-icon {
     color: #1a1a1a;
 }
 
@@ -224,7 +224,7 @@
     animation: calcFlash 0.5s ease;
 }
 
-.calc-copy-btn.flash .iconify {
+.calc-copy-btn.flash .svg-icon {
     color: #1a1a1a;
 }
 

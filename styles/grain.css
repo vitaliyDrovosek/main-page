@@ -45,3 +45,22 @@ body.hud-hidden .grain-overlay {
     pointer-events: none;
     transition: opacity 0.4s ease;
 }
+
+/* Шум можно оставить видимым в режиме сна (тумблер в дропдауне). */
+body.hud-hidden:not(.sleep-no-grain).grain-enabled .grain-overlay {
+    opacity: var(--grain-opacity, 0.055);
+    animation: noise-shift 0.3s steps(2) infinite;
+}
+
+@media (max-width: 768px) {
+    body.hud-hidden:not(.sleep-no-grain).grain-enabled .grain-overlay {
+        opacity: calc(var(--grain-opacity, 0.055) * 0.85);
+        animation-duration: 0.4s;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.hud-hidden:not(.sleep-no-grain).grain-enabled .grain-overlay {
+        animation: none;
+    }
+}

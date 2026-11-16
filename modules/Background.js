@@ -15,6 +15,9 @@ class Background {
         
         this._playAttempts = 0;
         this._maxPlayAttempts = 5;
+
+        // Таймеры повторного отключения субтитров YouTube.
+        this._captionTimers = [];
     }
 
     init() {
@@ -46,6 +49,7 @@ class Background {
 
         wrapper.style.display = 'none';
         wrapper.replaceChildren();
+        this._clearCaptionTimers();
 
         this._playAttempts = 0;
 
@@ -68,12 +72,13 @@ class Background {
             });
 
             if (this.app.data.youtubePlaylistId) {
-                iframe.src = `https://www.youtube.com/embed/videoseries?list=${this.app.data.youtubePlaylistId}&autoplay=1&mute=1&loop=1&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&enablejsapi=1`;
+                iframe.src = `https://www.youtube.com/embed/videoseries?list=${this.app.data.youtubePlaylistId}&autoplay=1&mute=1&loop=1&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&enablejsapi=1&cc_load_policy=0`;
             } else {
-                iframe.src = `https://www.youtube.com/embed/${this.app.data.youtubeId}?autoplay=1&mute=1&loop=1&playlist=${this.app.data.youtubeId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&enablejsapi=1`;
+                iframe.src = `https://www.youtube.com/embed/${this.app.data.youtubeId}?autoplay=1&mute=1&loop=1&playlist=${this.app.data.youtubeId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&enablejsapi=1&cc_load_policy=0`;
             }
 
             wrapper.appendChild(iframe);
+            this._disableYoutubeCaptions(iframe);
             this.app.video?.startKeepAlive();
             return;
         }
@@ -108,6 +113,40 @@ class Background {
         } else {
             img.src = this.app.data.background;
             img.style.display = 'block';
+        }
+    }
+
+    _clearCaptionTimers() {
+        for (const id of this._captionTimers) clearTimeout(id);
+        this._captionTimers = [];
+    }
+
+    _disableYoutubeCaptions(iframe) {
+        if (!iframe) return;
+
+        const send = (func, args) => {
+            if (!iframe.isConnected || !iframe.contentWindow) return;
+            try {
+                iframe.contentWindow.postMessage(JSON.stringify({
+                    event: 'command',
+                    func,
+                    args
+                }), '*');
+            } catch (err) {
+                console.debug('[Background] captions postMessage failed:', err?.message);
+            }
+        };
+
+        const disable = () => {
+            // Выгружаем модуль субтитров и сбрасываем выбранную дорожку:
+            // текст не должен появляться ни при старте, ни при смене видео в плейлисте.
+            send('unloadModule', ['captions']);
+            send('setOption', ['captions', 'track', {}]);
+        };
+
+        iframe.addEventListener('load', disable);
+        for (const delay of [300, 1000, 2500, 5000]) {
+            this._captionTimers.push(setTimeout(disable, delay));
         }
     }
 

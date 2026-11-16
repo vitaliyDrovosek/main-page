@@ -331,7 +331,7 @@
 
 .sticky-copy { padding: 4px 6px; opacity: 0.85; }
 
-.sticky-copy .iconify {
+.sticky-copy .svg-icon {
     width: 13px;
     height: 13px;
     color: var(--sticky-accent);
@@ -350,7 +350,7 @@
     opacity: 1;
 }
 
-.sticky-copy:hover .iconify { color: #1a1a1a; }
+.sticky-copy:hover .svg-icon { color: #1a1a1a; }
 
 .sticky-copy:active,
 .sticky-read-more:active { transform: scale(0.96); }
@@ -361,7 +361,7 @@
     border-color: var(--sticky-accent);
     animation: stickyFlash 0.6s ease;
 }
-.sticky-copy.flash .iconify { color: #1a1a1a; }
+.sticky-copy.flash .svg-icon { color: #1a1a1a; }
 
 @keyframes stickyFlash {
     0%, 100% { transform: scale(1); }

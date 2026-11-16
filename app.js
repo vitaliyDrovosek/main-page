@@ -17,6 +17,7 @@ import Glow from './modules/Glow.js';
 import Hue from './modules/Hue.js';
 import Aim from './modules/Aim.js';
 import Typing from './modules/Typing.js';
+import Casino from './modules/Casino.js';
 import Achievements from './modules/Achievements.js';
 import GameIcons from './modules/GameIcons.js';
 import TimeWidget from './modules/TimeWidget.js';
@@ -56,6 +57,7 @@ class App {
         this.hue = new Hue(this);
         this.aim = new Aim(this);
         this.typing = new Typing(this);
+        this.casino = new Casino(this);
         this.achievements = new Achievements(this);
         this.gameIcons = new GameIcons(this);
         this.timeWidget = new TimeWidget(this);
@@ -105,6 +107,7 @@ class App {
         this.aim.updateDropdownBest();
         this.typing.init();
         this.typing.updateDropdownBest();
+        this.casino.init();
         this.achievements.init();
         this.gameIcons.init();
         this.timeWidget.init();

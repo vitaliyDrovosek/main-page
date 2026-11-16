@@ -112,6 +112,9 @@ class HUD {
         this.updateGroupsLockIndicator();
         this.updateGlowIndicator();
         this.updateBlurIndicator();
+        this.updateSleepGrainIndicator();
+        this.updateSleepBlurIndicator();
+        this.applySleepStyles();
     }
 
     
@@ -291,6 +294,45 @@ class HUD {
     updateBlurIndicator() {
         const indicator = document.getElementById('blurIndicator');
         if (indicator) indicator.classList.toggle('off', !this.app.data.blurEnabled);
+    }
+
+    // Эффекты в режиме сна включены, пока пользователь явно их не выключил.
+    _isSleepGrainEnabled() {
+        return this.app.data.sleepGrainEnabled !== false;
+    }
+
+    _isSleepBlurEnabled() {
+        return this.app.data.sleepBlurEnabled !== false;
+    }
+
+    toggleSleepGrain() {
+        this.app.data.sleepGrainEnabled = !this._isSleepGrainEnabled();
+        this.updateSleepGrainIndicator();
+        this.applySleepStyles();
+        this.app.storage.save();
+    }
+
+    updateSleepGrainIndicator() {
+        const indicator = document.getElementById('sleepGrainIndicator');
+        if (indicator) indicator.classList.toggle('off', !this._isSleepGrainEnabled());
+    }
+
+    toggleSleepBlur() {
+        this.app.data.sleepBlurEnabled = !this._isSleepBlurEnabled();
+        this.updateSleepBlurIndicator();
+        this.applySleepStyles();
+        this.app.storage.save();
+    }
+
+    updateSleepBlurIndicator() {
+        const indicator = document.getElementById('sleepBlurIndicator');
+        if (indicator) indicator.classList.toggle('off', !this._isSleepBlurEnabled());
+    }
+
+    applySleepStyles() {
+        // Классы sleep-no-* включаются только когда эффект в сне выключен.
+        document.body.classList.toggle('sleep-no-grain', !this._isSleepGrainEnabled());
+        document.body.classList.toggle('sleep-no-blur', !this._isSleepBlurEnabled());
     }
 
     toggleGameIcons() { this.app.gameIcons?.toggle(); }

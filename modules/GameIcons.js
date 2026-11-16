@@ -28,6 +28,8 @@ class GameIcons {
             ?.addEventListener('click', () => this.app.aim?.open());
         document.getElementById('gameIconTyping')
             ?.addEventListener('click', () => this.app.typing?.open());
+        document.getElementById('gameIconCasino')
+            ?.addEventListener('click', () => this.app.casino?.open());
     }
 
     updateVisibility() {

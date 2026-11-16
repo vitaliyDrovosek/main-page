@@ -1,7 +1,9 @@
 
 
 body:not(.hud-hidden).blur-enabled #bgVideo,
-body:not(.hud-hidden).blur-enabled .youtube-wrapper iframe {
+body:not(.hud-hidden).blur-enabled .youtube-wrapper iframe,
+body.hud-hidden:not(.sleep-no-blur).blur-enabled #bgVideo,
+body.hud-hidden:not(.sleep-no-blur).blur-enabled .youtube-wrapper iframe {
     filter: blur(3px);
     transition: filter 0.3s ease;
     will-change: filter;
