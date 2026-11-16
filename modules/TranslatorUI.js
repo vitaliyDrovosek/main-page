@@ -1,4 +1,5 @@
 import Translator from './Translator.js';
+import Icons from './Icons.js';
 
 class TranslatorUI {
     constructor(app) {
@@ -113,7 +114,7 @@ class TranslatorUI {
                     <span class="tool-result-detail">${note}</span>
                 </div>
                 <div class="tool-result-actions">
-                    <button class="calc-copy-btn" title="Копировать перевод"><span class="iconify" data-icon="mdi:content-copy"></span></button>
+                    <button class="calc-copy-btn" title="Копировать перевод">${Icons.markup('copy')}</button>
                 </div>
             </div>
         `;

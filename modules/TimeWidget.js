@@ -91,6 +91,29 @@ class TimeWidget {
         this.updateClockDisplayIndicator();
         this.renderSleepTime();
 
+        // Шрифты и финальная вёрстка могут измениться уже после init().
+        // Пересчитываем ширины и позицию верхних плашек ещё раз, когда
+        // страница полностью готова, чтобы после перезагрузки блоки
+        // секундомера и таймера не разъезжались.
+        requestAnimationFrame(() => {
+            this._fixTopWidths();
+            this._syncTopDisplay();
+        });
+        window.addEventListener('load', () => {
+            this._fixTopWidths();
+            this._syncTopDisplay();
+        });
+        window.addEventListener('pageshow', () => {
+            this._fixTopWidths();
+            this.renderSleepTime();
+        });
+        if (document.fonts?.ready) {
+            document.fonts.ready.then(() => {
+                this._fixTopWidths();
+                this._syncTopDisplay();
+            }).catch(() => {});
+        }
+
         this._refreshAutoSave();
     }
 
@@ -108,7 +131,6 @@ class TimeWidget {
 
     saveState() {
         if (!this.app?.data) return;
-        if (!this.isActive()) return;
 
         const state = {
             swRunning: this.swRunning,
@@ -156,8 +178,17 @@ class TimeWidget {
         }
         this.swRenderLaps();
 
-        this.cdTotal = num(s.cdTotal, 0);
-        if (s.cdRunning && s.cdEndTimeAbs) {
+        this.cdTotal = Math.max(0, num(s.cdTotal, 0));
+        if (this.cdTotal === 0) {
+            // Таймер ещё ни разу не настраивали: нельзя показывать «00:00»
+            // и тем более считать его просроченным (иначе после перезагрузки
+            // он занимал место рядом с часами).
+            this.cdRemaining = 0;
+            this.cdRunning = false;
+            this.cdFinished = false;
+            this.cdOvertime = false;
+            this.cdRender();
+        } else if (s.cdRunning && s.cdEndTimeAbs) {
             const remaining = num(s.cdEndTimeAbs, 0) - Date.now();
             this.cdRemaining = remaining;
             this.cdRunning = true;
@@ -166,10 +197,10 @@ class TimeWidget {
             this.cdEndTime = performance.now() + remaining;
             this.cdTick();
         } else {
-            this.cdRemaining = num(s.cdRemaining, 0);
+            this.cdRemaining = num(s.cdRemaining, this.cdTotal);
             this.cdRunning = false;
             this.cdFinished = !!s.cdFinished;
-            this.cdOvertime = s.cdOvertime === true || this.cdRemaining <= 0;
+            this.cdOvertime = s.cdOvertime === true && this.cdRemaining <= 0;
             this.cdRender();
         }
         this.cdUpdateButton();
@@ -253,20 +284,31 @@ class TimeWidget {
 
         const measure = (el, samples) => {
             if (!el) return;
-            const prev = el.textContent;
-            el.style.minWidth = '';
+            const prevText = el.textContent;
+            const prevStyle = el.getAttribute('style');
+
+            // Элементы в обычном режиме скрыты через display:none, поэтому
+            // offsetWidth равен нулю. Временно делаем их измеримыми.
+            el.style.position = 'absolute';
+            el.style.visibility = 'hidden';
+            el.style.display = 'inline-block';
+            el.style.left = '-9999px';
+            el.style.right = 'auto';
+            el.style.top = '0';
             el.style.width = '';
+            el.style.minWidth = '';
+
             let max = 0;
             for (const s of samples) {
                 el.textContent = s;
                 const w = el.offsetWidth;
                 if (w > max) max = w;
             }
-            el.textContent = prev;
-            if (max > 0) {
-                el.style.width = '';
-                el.style.minWidth = max + 'px';
-            }
+
+            el.textContent = prevText;
+            if (prevStyle === null) el.removeAttribute('style');
+            else el.setAttribute('style', prevStyle);
+            if (max > 0) el.style.minWidth = max + 'px';
         };
 
         const swSamples = [];
@@ -289,9 +331,10 @@ class TimeWidget {
         const showSw = sleeping
             ? this.isSwStarted()
             : (this.swRunning || this.swElapsed > 0);
-        const showCd = sleeping
+        const hasCd = this.cdTotal > 0 || this.cdRunning;
+        const showCd = hasCd && (sleeping
             ? this.isCdStarted()
-            : (this.cdRunning || this.cdRemaining !== 0 || this.cdOvertime || this.cdFinished);
+            : (this.cdRunning || this.cdRemaining !== 0 || this.cdOvertime || this.cdFinished));
 
         if (this.topSwEl) {
             this.topSwEl.classList.toggle('hidden', !showSw);
@@ -719,6 +762,7 @@ class TimeWidget {
 
         if (overtime && !this.cdOvertime) {
             this.cdOvertime = true;
+            this.cdUpdateButton();
             if (!this._cdSoundPlayed) {
                 this._cdSoundPlayed = true;
                 this.cdPlaySound();

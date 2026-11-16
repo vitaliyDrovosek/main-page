@@ -1,4 +1,5 @@
 import Calculator from './Calculator.js';
+import Icons from './Icons.js';
 
 class CalculatorUI {
     constructor(app) {
@@ -28,7 +29,7 @@ class CalculatorUI {
                     <span class="calc-result-expression">${this.escapeHtml(value)}</span>
                     <div class="calc-result-equals">
                         <span class="calc-result-value">= ${this.escapeHtml(display)}</span>
-                        <button class="calc-copy-btn" title="Копировать"><span class="iconify" data-icon="mdi:content-copy"></span></button>
+                        <button class="calc-copy-btn" title="Копировать">${Icons.markup('copy')}</button>
                     </div>
                 </div>
             `,

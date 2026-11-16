@@ -1,3 +1,5 @@
+import Icons from './Icons.js';
+
 class StickyNotes {
     constructor(app) {
         this.app = app;
@@ -227,7 +229,7 @@ class StickyNotes {
                 <textarea class="sticky-text" placeholder="Заметка..." spellcheck="false"></textarea>
                 <div class="sticky-actions">
                     <button class="sticky-copy" title="Копировать">
-                        <span class="iconify" data-icon="mdi:content-copy"></span>
+                        ${Icons.markup('copy')}
                     </button>
                     <button class="sticky-read-more" style="display:none;" title="Развернуть заметку">
                         <span class="sticky-read-more-text">Развернуть</span>

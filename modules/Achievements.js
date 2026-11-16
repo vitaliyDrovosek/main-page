@@ -11,7 +11,7 @@ class Achievements {
         this._audioCtx = null;
 
         
-        this.TOAST_DURATION = 5000;
+        this.TOAST_DURATION = 8000;
         this.TOAST_GAP = 400;
 
         this._initialized = false;
@@ -41,6 +41,14 @@ class Achievements {
             typing_40wpm:     { title: 'Ловкие пальцы',         desc: '40+ WPM' },
             typing_60wpm:     { title: 'Клавиатурный ниндзя',   desc: '60+ WPM' },
             typing_90acc:     { title: 'Снайпер клавиатуры',    desc: '90%+ точности в Typing Speed' },
+
+            casino_first:     { title: 'Первая ставка',         desc: 'Сыграл в виртуальном казино' },
+            casino_10:        { title: 'Постоянный игрок',      desc: '10 раундов в казино' },
+            casino_slots_win: { title: 'Три в ряд',             desc: 'Собрал три одинаковых символа в слотах' },
+            casino_sevens:    { title: 'Джекпот',               desc: 'Поймал три семёрки в слотах' },
+            casino_blackjack: { title: 'Блэкджек',              desc: 'Набрал 21 с двух карт' },
+            casino_big_win:   { title: 'Крупный куш',           desc: 'Выиграл 5 ставок за один раунд' },
+            casino_rich:      { title: 'Хайроллер',             desc: 'Накопил 10 000 фишек' },
 
             night_owl:        { title: 'Полуночник',            desc: 'Зашёл после 3:00' },
             early_bird:       { title: 'Ранняя пташка',         desc: 'Зашёл до 6:00' },
@@ -187,6 +195,27 @@ class Achievements {
         if (stats.wpm >= 40)         this.unlock('typing_40wpm');
         if (stats.wpm >= 60)         this.unlock('typing_60wpm');
         if (stats.accuracy >= 90)    this.unlock('typing_90acc');
+    }
+
+    trackCasinoRound(stats) {
+        const data = this.app.data;
+        data.casinoGames = (data.casinoGames || 0) + 1;
+        if (stats.net > 0) {
+            data.casinoBestWin = Math.max(data.casinoBestWin || 0, stats.net);
+        }
+
+        if (data.casinoGames === 1)  this.unlock('casino_first');
+        if (data.casinoGames >= 10)  this.unlock('casino_10');
+        if (stats.game === 'slots' && stats.triple) this.unlock('casino_slots_win');
+        if (stats.game === 'slots' && Array.isArray(stats.symbols) &&
+            stats.symbols.length === 3 && stats.symbols.every((s) => s === 'seven')) {
+            this.unlock('casino_sevens');
+        }
+        if (stats.blackjack) this.unlock('casino_blackjack');
+        if (stats.bet > 0 && stats.net >= stats.bet * 5) this.unlock('casino_big_win');
+        if (stats.balance >= 10000) this.unlock('casino_rich');
+
+        this.save();
     }
 
     

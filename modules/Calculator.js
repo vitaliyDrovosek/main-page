@@ -16,8 +16,7 @@ class Calculator {
     }
 
     static hasPercentPhrase(str) {
-        
-        return (/процент/i.test(str) && /\bот\b/i.test(str)) || /%\s*от/i.test(str);
+        return (/процент/i.test(str) && /(^|\s)от(\s|$)/i.test(str)) || /%\s*от/i.test(str);
     }
 
     static calculate(str) {
